@@ -1,0 +1,102 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Element {
+  id          Int      @id @default(autoincrement())
+  atomicNum   Int      @unique
+  symbol      String   @unique
+  name        String
+  group       Int
+  period      Int
+  category    String
+  atomicMass  Float
+  
+  // Данные для сторителлинга и обучения
+  description String   // Основной рассказ от лица элемента
+  applications String  // Применение в жизни
+  
+  questions   Question[]
+}
+
+model Question {
+  id            Int      @id @default(autoincrement())
+  elementId     Int
+  text          String   // Текст вопроса
+  correctAnswer String   // Правильный ответ
+  difficulty    Int      @default(1) // 1 - лёгкий, 2 - средний, 3 - сложный
+  options       String[] // Варианты ответов
+  explanation   String?  // Объяснение правильного ответа
+  
+  element       Element  @relation(fields: [elementId], references: [id])
+}
+
+model UserState {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  currentElementId Int
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  progress        UserProgress?
+}
+
+model UserProgress {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  elementsStudied Int[]    @default([])
+  totalCorrect    Int      @default(0)
+  totalIncorrect  Int      @default(0)
+  currentStreak   Int      @default(0)
+  bestStreak      Int      @default(0)
+  level           Int      @default(1)
+  xp              Int      @default(0)
+  currentDifficulty Int    @default(1) // Текущий уровень сложности
+  consecutiveCorrect Int   @default(0) // Для адаптивного переключения
+  
+  userState       UserState @relation(fields: [userId], references: [userId])
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TelemetryEvent {
+  id             String   @id @default(cuid())
+  userId         String
+  actionType     String   // 'ANSWER_CORRECT', 'ANSWER_INCORRECT', 'HINT_REQUESTED'
+  elementId      Int?
+  questionId     Int?
+  userAnswer     String?
+  aiHint         String?  // Сгенерированная подсказка
+  timestamp      DateTime @default(now())
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  code        String   @unique  // Уникальный код достижения
+  name        String   // Название
+  description String   // Описание
+  icon        String   // Эмодзи-иконка
+  condition   String   // JSON условие получения
+  
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+  
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  
+  @@unique([userId, achievementId])
+}

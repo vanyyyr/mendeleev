@@ -1,0 +1,148 @@
+.statsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.levelInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.levelBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0984e3, #74b9ff);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(9, 132, 227, 0.3);
+}
+
+.levelText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.levelTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2d3436;
+}
+
+.xpBar {
+  width: 120px;
+  height: 6px;
+  background: #f1f2f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.xpFill {
+  height: 100%;
+  background: linear-gradient(90deg, #00b894, #55efc4);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.xpText {
+  font-size: 0.75rem;
+  color: #636e72;
+  font-weight: 600;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #2d3436;
+}
+
+.statValue.correct {
+  color: #00b894;
+}
+
+.statValue.streak {
+  color: #e17055;
+}
+
+.statValue.achievements {
+  color: #f39c12;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  color: #b2bec3;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .statsBar {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .levelInfo {
+    width: 100%;
+  }
+
+  .xpBar {
+    width: 100px;
+  }
+
+  .stats {
+    width: 100%;
+    justify-content: space-around;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsBar {
+    padding: 0.5rem;
+  }
+
+  .levelBadge {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .levelTitle {
+    font-size: 0.8rem;
+  }
+
+  .statValue {
+    font-size: 1rem;
+  }
+
+  .statLabel {
+    font-size: 0.6rem;
+  }
+}

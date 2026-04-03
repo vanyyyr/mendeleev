@@ -1,0 +1,185 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  overflow-x: auto;
+  padding: 1rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: #f1f2f6;
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #b2bec3;
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #636e72;
+}
+
+.table {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 8px;
+  min-width: 1000px;
+}
+
+.element {
+  position: relative;
+  aspect-ratio: 1 / 1.1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: #ffffff;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: #2d3436;
+  min-height: 44px;
+  min-width: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.element:hover {
+  transform: translateY(-4px) scale(1.05);
+  z-index: 10;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.element:active {
+  transform: scale(0.95);
+}
+
+.element.studied {
+  position: relative;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
+  border-color: #66bb6a !important;
+  box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
+}
+
+.element.studied:hover {
+  box-shadow: 0 8px 16px rgba(102, 187, 106, 0.3);
+}
+
+.studiedBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  background: #4caf50;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.atomicNum {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.7;
+  align-self: flex-start;
+}
+
+.symbol {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-top: -5px;
+  color: #2d3436;
+}
+
+.name {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Category Colors with student-friendly pastel tones */
+.diatomic_nonmetal { background: #e3f2fd; border-bottom: 3px solid #90caf9; }
+.noble_gas { background: #f3e5f5; border-bottom: 3px solid #ce93d8; }
+.alkali_metal { background: #ffebee; border-bottom: 3px solid #ffab91; }
+.alkaline_earth_metal { background: #fff8e1; border-bottom: 3px solid #ffe082; }
+.metalloid { background: #e0f2f1; border-bottom: 3px solid #80cbc4; }
+.polyatomic_nonmetal { background: #e8eaf6; border-bottom: 3px solid #9fa8da; }
+.post_transition_metal { background: #e0f7fa; border-bottom: 3px solid #80deea; }
+.transition_metal { background: #fce4ec; border-bottom: 3px solid #f48fb1; }
+
+/* Hover styling matching the category */
+.diatomic_nonmetal:hover { border-color: #90caf9; }
+.noble_gas:hover { border-color: #ce93d8; }
+.alkali_metal:hover { border-color: #ffab91; }
+.alkaline_earth_metal:hover { border-color: #ffe082; }
+.metalloid:hover { border-color: #80cbc4; }
+.polyatomic_nonmetal:hover { border-color: #9fa8da; }
+.post_transition_metal:hover { border-color: #80deea; }
+.transition_metal:hover { border-color: #f48fb1; }
+
+@media (max-width: 768px) {
+  .table {
+    min-width: 800px;
+    gap: 4px;
+  }
+
+  .element {
+    padding: 4px;
+    border-radius: 6px;
+  }
+
+  .symbol {
+    font-size: 1.2rem;
+  }
+
+  .name {
+    font-size: 0.5rem;
+  }
+
+  .atomicNum {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    min-width: 650px;
+    gap: 3px;
+  }
+
+  .element {
+    padding: 3px;
+    border-radius: 4px;
+  }
+
+  .symbol {
+    font-size: 1rem;
+  }
+
+  .name {
+    display: none;
+  }
+
+  .atomicNum {
+    font-size: 0.55rem;
+  }
+}

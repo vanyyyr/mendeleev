@@ -1,0 +1,52 @@
+.mascotContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  animation: float 4s ease-in-out infinite;
+  margin-right: 1rem;
+}
+
+.orbits {
+  animation: spin 10s linear infinite;
+  transform-origin: center;
+}
+
+.core {
+  transition: fill 0.3s ease;
+}
+
+.face {
+  transition: all 0.3s;
+}
+
+.thinking .face {
+  animation: pulse 2s infinite;
+}
+
+.speaking .face {
+  animation: bounce 1s infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}

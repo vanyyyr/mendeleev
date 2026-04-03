@@ -1,0 +1,480 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #2d3436;
+}
+
+.header {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: #f8f9fa;
+  gap: 1rem;
+}
+
+.navButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.navButton {
+  background: #f1f2f6;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  color: #2d3436;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.navButton:hover:not(:disabled) {
+  background: #0984e3;
+  color: #fff;
+}
+
+.navButtonDisabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.titles {
+  flex: 1;
+  text-align: center;
+}
+
+.titles h2 {
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 800;
+  color: #0984e3;
+}
+
+.titles p {
+  color: #636e72;
+  font-size: 0.9rem;
+  margin: 0;
+  margin-top: 4px;
+}
+
+.closeButton {
+  background: #f1f2f6;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  color: #2d3436;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.closeButton:hover {
+  background: #dfe4ea;
+  color: #ff4757;
+}
+
+.content {
+  padding: 2rem;
+  overflow-y: auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.storySection {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.chatBubble {
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+  color: #1565c0;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  flex: 1;
+}
+
+.testSection {
+  background: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.testSection h3 {
+  margin-bottom: 0.5rem;
+  color: #2d3436;
+  font-weight: 700;
+}
+
+.questionText {
+  margin-bottom: 1.5rem;
+  color: #636e72;
+  font-size: 1.05rem;
+}
+
+.testOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.optionButton {
+  background: #ffffff;
+  border: 2px solid #dfe6e9;
+  padding: 1.2rem;
+  border-radius: 12px;
+  color: #2d3436;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.optionButton:hover:not(:disabled) {
+  border-color: #0984e3;
+  color: #0984e3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(9, 132, 227, 0.1);
+}
+
+.optionButton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.aiHint {
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: #fff8e1;
+  border-radius: 12px;
+  border-left: 4px solid #ffca28;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  color: #5d4037;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.aiIcon {
+  font-size: 1.5rem;
+}
+
+.testHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.testHeader h3 {
+  margin: 0;
+  color: #2d3436;
+  font-weight: 700;
+}
+
+.questionCounter {
+  font-size: 0.85rem;
+  color: #636e72;
+  font-weight: 600;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #dfe6e9;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0984e3, #74b9ff);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.questionMeta {
+  margin-bottom: 0.75rem;
+}
+
+.difficultyBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.difficulty1 {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.difficulty2 {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.difficulty3 {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.explanation {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  background: #f1f2f6;
+  border-radius: 12px;
+  color: #2d3436;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  border-left: 4px solid #0984e3;
+}
+
+.nextButton {
+  margin-top: 1.25rem;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #0984e3, #74b9ff);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+}
+
+.nextButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(9, 132, 227, 0.4);
+}
+
+.completed {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  border-radius: 12px;
+  text-align: center;
+  color: #2e7d32;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.recommendation {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border-radius: 12px;
+  border-left: 4px solid #0984e3;
+}
+
+.recommendationText {
+  color: #1565c0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.nextElementButton {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #0984e3, #74b9ff);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+}
+
+.nextElementButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(9, 132, 227, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+
+  .header {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+  }
+
+  .titles {
+    order: 3;
+    width: 100%;
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .titles h2 {
+    font-size: 1.2rem;
+  }
+
+  .titles p {
+    font-size: 0.75rem;
+  }
+
+  .navButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .closeButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+
+  .content {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .storySection {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chatBubble {
+    border-top-left-radius: 16px;
+    font-size: 1rem;
+    padding: 1.25rem;
+    width: 100%;
+  }
+
+  .testSection {
+    padding: 1.25rem;
+  }
+
+  .testOptions {
+    grid-template-columns: 1fr;
+  }
+
+  .optionButton {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.75rem 1rem;
+  }
+
+  .titles h2 {
+    font-size: 1.2rem;
+  }
+
+  .titles p {
+    font-size: 0.75rem;
+  }
+
+  .content {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .chatBubble {
+    font-size: 0.95rem;
+    padding: 1rem;
+  }
+
+  .testSection {
+    padding: 1rem;
+  }
+
+  .questionText {
+    font-size: 0.95rem;
+  }
+
+  .optionButton {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+}
