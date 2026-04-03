@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import styles from './analytics.module.css';
 
 interface AnalyticsData {
@@ -36,16 +36,16 @@ export default function AnalyticsPage() {
   const [password, setPassword] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const p = searchParams.get('p');
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get('p');
     if (p) {
       setPassword(p);
       setSubmitted(true);
       fetchAnalytics(p);
     }
-  }, [searchParams]);
+  }, []);
 
   const fetchAnalytics = async (pwd: string) => {
     try {
