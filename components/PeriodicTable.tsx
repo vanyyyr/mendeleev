@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { elements, ChemicalElement } from '../lib/elements';
 import styles from './PeriodicTable.module.css';
 import StoryModal from './StoryModal';
-import { useProgressContext } from '../lib/contexts/ProgressContext';
 
 interface PeriodicTableProps {
   externalSelection?: ChemicalElement | null;
@@ -14,12 +13,6 @@ interface PeriodicTableProps {
 export default function PeriodicTable({ externalSelection, onExternalClear }: PeriodicTableProps) {
   const [selectedElement, setSelectedElement] = useState<ChemicalElement | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const { progress, refreshProgress } = useProgressContext();
-
-  const studiedElements = useMemo(
-    () => new Set(progress?.elementsStudied ?? []),
-    [progress?.elementsStudied]
-  );
 
   useEffect(() => {
     if (externalSelection) {
@@ -38,7 +31,6 @@ export default function PeriodicTable({ externalSelection, onExternalClear }: Pe
   const handleModalClose = () => {
     setSelectedElement(null);
     onExternalClear?.();
-    refreshProgress();
   };
 
   const getCategoryClass = (category: string) => {
@@ -52,13 +44,12 @@ export default function PeriodicTable({ externalSelection, onExternalClear }: Pe
   const actinides = elements.filter(el => el.category === 'actinide' && el.group === 0);
 
   const renderElement = (el: ChemicalElement, gridStyle?: React.CSSProperties) => {
-    const isStudied = studiedElements.has(el.atomicNum);
     const isDimmed = activeCategory && el.category !== activeCategory;
 
     return (
       <div
         key={el.atomicNum}
-        className={`${styles.element} ${getCategoryClass(el.category)} ${isStudied ? styles.studied : ''} ${isDimmed ? styles.dimmed : ''}`}
+        className={`${styles.element} ${getCategoryClass(el.category)} ${isDimmed ? styles.dimmed : ''}`}
         style={gridStyle}
         onClick={() => handleElementClick(el)}
         role="button"
@@ -69,9 +60,6 @@ export default function PeriodicTable({ externalSelection, onExternalClear }: Pe
         <div className={styles.atomicNum}>{el.atomicNum}</div>
         <div className={styles.symbol}>{el.symbol}</div>
         <div className={styles.name}>{el.name}</div>
-        {isStudied && (
-          <div className={styles.studiedBadge} aria-label="Изучен">✓</div>
-        )}
       </div>
     );
   };

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import styles from './page.module.css';
 import PeriodicTable from '../components/PeriodicTable';
 import SearchBar from '../components/SearchBar';
+import AIChat from '../components/AIChat';
 import { ChemicalElement } from '../lib/elements';
 import { ProgressProvider } from '../lib/contexts/ProgressContext';
 
@@ -28,6 +29,7 @@ export default function Home() {
         <div className={styles.tableContainer}>
           <PeriodicTable externalSelection={selectedElement} onExternalClear={() => setSelectedElement(null)} />
         </div>
+        <AIChat />
       </main>
     </ProgressProvider>
   );

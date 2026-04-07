@@ -143,6 +143,9 @@
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
   flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .aiBadge {
