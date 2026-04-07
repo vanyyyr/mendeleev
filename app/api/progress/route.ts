@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getPrisma, isDbAvailable } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { calculateAdaptiveResult, calculateLevel } from '@/lib/adaptive-testing';
 import { checkNewAchievements } from '@/lib/achievements';
 
 const defaultProgress = {
-  elementsStudied: [],
+  elementsStudied: [] as number[],
   totalCorrect: 0,
   totalIncorrect: 0,
   currentStreak: 0,
@@ -17,36 +17,25 @@ const defaultProgress = {
 
 export async function POST(req: Request) {
   try {
-    if (!isDbAvailable()) {
-      return NextResponse.json({
-        progress: defaultProgress,
-        adaptiveResult: { newDifficulty: 1, shouldIncrease: false, shouldDecrease: false, xpGained: 10 },
-        leveledUp: false,
-        newAchievements: [],
-      });
-    }
-
     const { userId, wasCorrect, elementId } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
-    const db = getPrisma();
-
-    let userState = await db.userState.findFirst({
+    let userState = await prisma.userState.findFirst({
       where: { userId },
     });
 
     if (!userState) {
-      userState = await db.userState.create({
+      userState = await prisma.userState.create({
         data: {
           userId,
           currentElementId: elementId || 1,
         },
       });
 
-      await db.userProgress.create({
+      await prisma.userProgress.create({
         data: {
           userId,
           elementsStudied: elementId ? [elementId] : [],
@@ -54,12 +43,12 @@ export async function POST(req: Request) {
       });
     }
 
-    let progress = await db.userProgress.findFirst({
+    let progress = await prisma.userProgress.findFirst({
       where: { userId },
     });
 
     if (!progress) {
-      progress = await db.userProgress.create({
+      progress = await prisma.userProgress.create({
         data: {
           userId,
           elementsStudied: elementId ? [elementId] : [],
@@ -67,7 +56,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const existingAchievements = await db.userAchievement.findMany({
+    const existingAchievements = await prisma.userAchievement.findMany({
       where: { userId },
       include: { achievement: true },
     });
@@ -98,7 +87,7 @@ export async function POST(req: Request) {
       elementsStudied.push(elementId);
     }
 
-    const updatedProgress = await db.userProgress.update({
+    const updatedProgress = await prisma.userProgress.update({
       where: { id: progress.id },
       data: {
         totalCorrect: newTotalCorrect,
@@ -114,7 +103,7 @@ export async function POST(req: Request) {
     });
 
     if (elementId) {
-      await db.userState.update({
+      await prisma.userState.update({
         where: { id: userState.id },
         data: { currentElementId: elementId },
       });
@@ -135,12 +124,12 @@ export async function POST(req: Request) {
 
     const unlockedAchievements = [];
     for (const achievement of newAchievements) {
-      const dbAchievement = await db.achievement.findUnique({
+      const dbAchievement = await prisma.achievement.findUnique({
         where: { code: achievement.code },
       });
 
       if (dbAchievement) {
-        await db.userAchievement.create({
+        await prisma.userAchievement.create({
           data: {
             userId,
             achievementId: dbAchievement.id,
@@ -164,24 +153,12 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error('Progress update error:', error);
-    return NextResponse.json({
-      progress: defaultProgress,
-      adaptiveResult: { newDifficulty: 1, shouldIncrease: false, shouldDecrease: false, xpGained: 10 },
-      leveledUp: false,
-      newAchievements: [],
-    });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function GET(req: Request) {
   try {
-    if (!isDbAvailable()) {
-      return NextResponse.json({
-        progress: defaultProgress,
-        achievements: [],
-      });
-    }
-
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
 
@@ -189,13 +166,11 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
-    const db = getPrisma();
-
-    const progress = await db.userProgress.findFirst({
+    const progress = await prisma.userProgress.findFirst({
       where: { userId },
     });
 
-    const userAchievements = await db.userAchievement.findMany({
+    const userAchievements = await prisma.userAchievement.findMany({
       where: { userId },
       include: { achievement: true },
     });
@@ -219,9 +194,6 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     console.error('Progress fetch error:', error);
-    return NextResponse.json({
-      progress: defaultProgress,
-      achievements: [],
-    });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getPrisma, isDbAvailable } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
@@ -10,30 +10,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    if (!isDbAvailable()) {
-      return NextResponse.json({ success: true, event: { id: 'local-' + Date.now() } }, { status: 201 });
-    }
-
-    const db = getPrisma();
-
     if (elementId) {
-      const existingState = await db.userState.findFirst({
+      const existingState = await prisma.userState.findFirst({
         where: { userId },
       });
 
       if (existingState) {
-        await db.userState.update({
+        await prisma.userState.update({
           where: { id: existingState.id },
           data: { currentElementId: elementId },
         });
       } else {
-        await db.userState.create({
+        await prisma.userState.create({
           data: { userId, currentElementId: elementId },
         });
       }
     }
 
-    const event = await db.telemetryEvent.create({
+    const event = await prisma.telemetryEvent.create({
       data: {
         userId,
         actionType,

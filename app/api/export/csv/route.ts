@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getPrisma, isDbAvailable } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(req: Request) {
   try {
-    if (!isDbAvailable()) {
-      return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
-    }
-
     const authHeader = req.headers.get('authorization');
     const password = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
@@ -14,8 +10,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const db = getPrisma();
-    const events = await db.telemetryEvent.findMany({
+    const events = await prisma.telemetryEvent.findMany({
       orderBy: { timestamp: 'asc' },
     });
 
