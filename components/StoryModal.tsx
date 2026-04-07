@@ -228,10 +228,18 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
             const { done, value } = await reader.read();
             if (done) break;
             const chunk = decoder.decode(value);
-            const textChunk = chunk.split('\\n').join('\n')
-              .replace(/0:"/g, '').replace(/"/g, '').replace(/\n\s*\n/g, '\n');
-            aiText += textChunk;
-            setHint(prev => prev + textChunk);
+            const textChunk = chunk
+              .replace(/data:\s*/g, '')
+              .split('\\n').join('\n')
+              .replace(/0:"/g, '')
+              .replace(/^"|"$/g, '')
+              .replace(/"\s*$/gm, '')
+              .replace(/\n\s*\n/g, '\n')
+              .replace(/^Привет/gm, 'Привет');
+            if (textChunk.trim()) {
+              aiText += textChunk;
+              setHint(prev => prev + textChunk);
+            }
           }
         }
 
