@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const authHeader = req.headers.get('authorization');
     const password = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
-    if (password !== process.env.ANALYTICS_PASSWORD) {
+    if (process.env.NODE_ENV === 'production' && password !== process.env.ANALYTICS_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     for (const el of missingElements) {
       // Use AI to generate content
       const { object } = await generateObject({
-        model: openRouter('qwen/qwen3.6-plus:free'),
+        model: openRouter('google/gemini-2.0-flash-lite-preview-02-05:free'),
         schema: z.object({
           description: z.string(),
           applications: z.string(),

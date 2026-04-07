@@ -7,73 +7,73 @@
   animation: float 4s ease-in-out infinite;
   margin-right: 0.75rem;
   flex-shrink: 0;
+  position: relative;
 }
 
-.orbits {
-  animation: spin 12s linear infinite;
-  transform-origin: center;
+.mascotImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--background-dim) 0%, transparent 70%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  z-index: 2;
 }
 
-.electron {
-  animation: electronOrbit1 3s linear infinite;
-  transform-origin: 60px 60px;
+.mascotImage {
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 150, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
-.electron2 {
-  animation: electronOrbit2 4s linear infinite;
-  transform-origin: 60px 60px;
+.elementBadge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 800;
+  font-size: 0.8rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 10;
 }
 
-.core {
-  transition: fill 0.3s ease;
-}
-
-.face {
-  transition: all 0.3s;
-}
-
-.mouth {
-  animation: speak 0.8s ease-in-out infinite;
-}
-
-.thinking .face {
+/* Animations */
+.thinking .mascotImageWrapper {
   animation: pulse 2s infinite;
+  filter: brightness(1.2) sepia(0.2) hue-rotate(-20deg);
 }
 
-.speaking .orbits {
-  animation: spin 6s linear infinite;
+.speaking .mascotImageWrapper {
+  animation: speakBump 0.5s ease-in-out infinite alternate;
+  box-shadow: 0 0 30px var(--glow-color, rgba(0, 150, 255, 0.6));
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  0% { transform: translateY(0px); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
+  50% { transform: translateY(-8px); filter: drop-shadow(0 20px 20px rgba(0,0,0,0.15)); }
+  100% { transform: translateY(0px); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
 }
 
-@keyframes speak {
-  0%, 100% { ry: 3.5; }
-  50% { ry: 5; }
-}
-
-@keyframes electronOrbit1 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes electronOrbit2 {
-  from { transform: rotate(120deg); }
-  to { transform: rotate(480deg); }
+@keyframes speakBump {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-3px) scale(1.03); }
 }
 
 @media (max-width: 768px) {
@@ -83,3 +83,4 @@
     margin-right: 0.5rem;
   }
 }
+

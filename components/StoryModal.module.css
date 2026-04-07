@@ -145,6 +145,31 @@
   flex: 1;
 }
 
+.aiBadge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0984e3;
+  background: rgba(9, 132, 227, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(9, 132, 227, 0.2);
+}
+
+.aiSparkle {
+  margin-right: 0.3rem;
+  animation: shine 2s infinite linear;
+}
+
+@keyframes shine {
+  0% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.5; transform: scale(0.9); }
+}
+
 .testSection {
   background: #f8f9fa;
   border: 1px solid rgba(0, 0, 0, 0.05);

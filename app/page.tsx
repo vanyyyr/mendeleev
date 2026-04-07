@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import styles from './page.module.css';
 import PeriodicTable from '../components/PeriodicTable';
-import StatsBar from '../components/StatsBar';
 import SearchBar from '../components/SearchBar';
 import { ChemicalElement } from '../lib/elements';
 import { ProgressProvider } from '../lib/contexts/ProgressContext';
@@ -18,13 +17,12 @@ export default function Home() {
   return (
     <ProgressProvider>
       <main className={styles.main}>
-        <StatsBar />
         <header className={styles.header}>
           <h1 className={styles.title}>
             <span className={styles.titleIcon}>⚛️</span>
-            Mendeleev AI
+            Интерактивная таблица Менделеева
           </h1>
-          <p className={styles.subtitle}>Ваш интеллектуальный репетитор по химии</p>
+          <p className={styles.subtitle}>Ваш интеллектуальный гид по химии, управляемый нейросетями</p>
         </header>
         <SearchBar onSelect={handleSearchSelect} />
         <div className={styles.tableContainer}>
