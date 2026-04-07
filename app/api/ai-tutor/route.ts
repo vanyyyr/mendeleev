@@ -1,5 +1,6 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
+import { NextResponse } from 'next/server';
 
 const openRouter = createOpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
@@ -28,6 +29,10 @@ export async function POST(req: Request) {
       consecutiveIncorrect,
       previousHints = [],
     } = body;
+
+    if (!process.env.OPENROUTER_API_KEY) {
+      return NextResponse.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 });
+    }
 
     const difficultyContext = difficulty === 1
       ? 'Ученик начального уровня. Используй простые аналогии и бытовые примеры.'
