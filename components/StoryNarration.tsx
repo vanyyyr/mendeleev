@@ -17,9 +17,6 @@ export default function StoryNarration({ element, emotion, displayedStory, appli
     <div className={styles.storySection}>
       <Mascot element={element} emotion={emotion} />
       <div className={styles.chatBubble} aria-live="polite">
-        <div className={styles.aiBadge}>
-          <span className={styles.aiSparkle}>✨</span> Сгенерировано ИИ-Тьютором
-        </div>
         {displayedStory}
         {applications && (
           <>

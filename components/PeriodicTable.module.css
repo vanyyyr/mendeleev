@@ -332,3 +332,47 @@
     font-size: 0.5rem;
   }
 }
+
+/* Dark theme */
+[data-theme="dark"] .container::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+[data-theme="dark"] .container::-webkit-scrollbar-thumb {
+  background: #48484a;
+}
+
+[data-theme="dark"] .container::-webkit-scrollbar-thumb:hover {
+  background: #636366;
+}
+
+[data-theme="dark"] .legend {
+  background: rgba(30, 30, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .legendItem {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .element {
+  background: rgba(30, 30, 30, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .element:hover {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+[data-theme="dark"] .atomicNum {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .symbol {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .name {
+  color: rgba(255, 255, 255, 0.7);
+}
