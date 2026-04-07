@@ -9,7 +9,7 @@ const openRouter = createOpenAI({
       ...options,
       headers: {
         ...options?.headers,
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
         'X-Title': 'Mendeleev AI Tutor',
       },
     });
@@ -18,47 +18,79 @@ const openRouter = createOpenAI({
 
 export async function POST(req: Request) {
   try {
-    const { element, question, incorrectAnswer, correctAnswer, difficulty, consecutiveIncorrect } = await req.json();
+    const body = await req.json();
+    const {
+      element,
+      question,
+      incorrectAnswer,
+      correctAnswer,
+      difficulty,
+      consecutiveIncorrect,
+      previousHints = [],
+    } = body;
 
     const difficultyContext = difficulty === 1
-      ? 'Ученик начального уровня.'
+      ? 'Ученик начального уровня. Используй простые аналогии и бытовые примеры.'
       : difficulty === 2
-        ? 'Ученик среднего уровня.'
-        : 'Ученик продвинутого уровня.';
+        ? 'Ученик среднего уровня. Можно использовать термины из школьного курса химии.'
+        : 'Ученик продвинутого уровня. Можно использовать электронные конфигурации и закономерности таблицы.';
 
-    const struggleContext = consecutiveIncorrect >= 2
-      ? 'Ученик уже несколько раз ошибся подряд. Будь особенно поддерживающим и дай более конкретную подсказку.'
+    const struggleContext = consecutiveIncorrect >= 3
+      ? 'Ученик ошибся 3+ раза подряд. Дай максимально конкретную подсказку, почти по шагам, но всё ещё не давай ответ напрямую.'
+      : consecutiveIncorrect >= 2
+        ? 'Ученик ошибся 2 раза. Будь более конкретным — укажи на конкретное правило или свойство.'
+        : '';
+
+    const prevHintsContext = previousHints.length > 0
+      ? `Твои предыдущие подсказки по этому вопросу: ${previousHints.map((h: string, i: number) => `[${i + 1}] ${h}`).join(' | ')}. Не повторяй их — дай новую подсказку с другой стороны.`
       : '';
 
-    const systemPrompt = `Ты — эмпатичный AI-репетитор по химии для школьников 8-11 классов. 
-Сейчас ты играешь роль "ожившего" химического элемента ${element.name} (атомный номер ${element.atomicNum}).
+    // Element periodic context
+    const periodicContext = `
+Элемент: ${element.name} (${element.symbol}), атомный номер ${element.atomicNum}.
+Период ${element.period}, группа ${element.group || 'лантаноиды/актиноиды'}.
+Категория: ${element.category}. Молярная масса: ${element.atomicMass}.`;
 
-Контекст:
+    const systemPrompt = `Ты — эмпатичный AI-репетитор по химии для школьников 8-11 классов. 
+Сейчас ты играешь роль "ожившего" химического элемента ${element.name}.
+
+${periodicContext}
+
+Контекст ученика:
 - ${difficultyContext}
-- ${struggleContext}
-- Вопрос: "${question}"
-- Ответ ученика: "${incorrectAnswer}"
-- Правильный ответ: "${correctAnswer}"
+${struggleContext ? `- ${struggleContext}` : ''}
+
+Текущий вопрос: "${question}"
+Ответ ученика: "${incorrectAnswer}"
+Правильный ответ: "${correctAnswer}"
+${prevHintsContext}
 
 ПРАВИЛА:
-1. НИКОГДА не давай правильный ответ напрямую
-2. Дай короткую подсказку (1-2 предложения), которая наведёт на правильную мысль
-3. Используй химические законы, свойства элемента, положение в таблице Менделеева
-4. Будь поддерживающим и ободряющим — ошибка это нормально!
-5. Задай наводящий вопрос, чтобы ученик сам подумал
-6. НИКОГДА не галлюцинируй факты — только проверенная химия
-7. Пиши на русском языке, простым языком`;
+1. НИКОГДА не давай правильный ответ напрямую — даже в завуалированной форме
+2. Дай 1-2 предложения, которые наведут на правильную мысль
+3. Объясни через положение в таблице Менделеева, электронное строение или периодические закономерности
+4. Будь тёплым и поддерживающим — ошибка это часть учёбы!
+5. Заверши наводящим вопросом, чтобы ученик подумал сам
+6. НИКОГДА не галлюцинируй — только проверенные химические факты
+7. Пиши на русском языке, простым школьным языком
+8. Если это элемент из лантаноидов/актиноидов, расскажи об особенностях f-элементов`;
 
     const result = await streamText({
       model: openRouter('qwen/qwen3.6-plus:free'),
       system: systemPrompt,
       messages: [
-        { role: 'user', content: 'Я ответил неверно. Помоги мне понять, где я ошибся.' }
+        { role: 'user', content: 'Я ответил неверно. Помоги мне понять, где я ошибся, но не говори правильный ответ.' }
       ],
+      maxTokens: 200,
+      temperature: 0.7,
     });
 
     return result.toTextStreamResponse();
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Ошибка генерации подсказки' }), { status: 500 });
+    console.error('AI Tutor error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Ошибка генерации подсказки. Попробуйте ещё раз.' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }

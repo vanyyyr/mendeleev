@@ -1,11 +1,12 @@
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   width: 100%;
   overflow-x: auto;
   padding: 1rem 0;
   -webkit-overflow-scrolling: touch;
+  gap: 1.5rem;
 }
 
 .container::-webkit-scrollbar {
@@ -26,43 +27,113 @@
   background: #636e72;
 }
 
+/* ═══ Category Legend ═══ */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #636e72;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.legendItem:hover {
+  background: var(--cat-color, #f1f2f6);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.legendActive {
+  background: var(--cat-color, #f1f2f6) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  color: #2d3436;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* ═══ Main Table Grid ═══ */
 .table {
   display: grid;
   grid-template-columns: repeat(18, 1fr);
   grid-template-rows: repeat(7, 1fr);
-  gap: 8px;
-  min-width: 1000px;
+  gap: 3px;
+  min-width: 1100px;
 }
 
+/* ═══ Element Cell ═══ */
 .element {
   position: relative;
   aspect-ratio: 1 / 1.1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 6px;
-  border-radius: 8px;
+  padding: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   background: #ffffff;
-  border: 2px solid transparent;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1.5px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   color: #2d3436;
   min-height: 44px;
   min-width: 44px;
   -webkit-tap-highlight-color: transparent;
+  animation: fadeInElement 0.4s ease-out both;
+}
+
+@keyframes fadeInElement {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .element:hover {
-  transform: translateY(-4px) scale(1.05);
+  transform: translateY(-3px) scale(1.08);
   z-index: 10;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .element:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
+.element:focus-visible {
+  outline: 2px solid #0984e3;
+  outline-offset: 2px;
+}
+
+/* Dimmed state for category filter */
+.dimmed {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Studied */
 .element.studied {
   position: relative;
   background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
@@ -76,94 +147,122 @@
 
 .studiedBadge {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 18px;
-  height: 18px;
+  top: -3px;
+  right: -3px;
+  width: 14px;
+  height: 14px;
   background: #4caf50;
   color: #fff;
   border-radius: 50%;
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .atomicNum {
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   font-weight: 600;
-  opacity: 0.7;
+  opacity: 0.6;
   align-self: flex-start;
+  line-height: 1;
 }
 
 .symbol {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 800;
   text-align: center;
-  margin-top: -5px;
+  margin-top: -3px;
   color: #2d3436;
+  line-height: 1.1;
 }
 
 .name {
-  font-size: 0.6rem;
+  font-size: 0.45rem;
   font-weight: 600;
   text-align: center;
-  opacity: 0.8;
+  opacity: 0.7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
-/* Category Colors with student-friendly pastel tones */
-.diatomic_nonmetal { background: #e3f2fd; border-bottom: 3px solid #90caf9; }
-.noble_gas { background: #f3e5f5; border-bottom: 3px solid #ce93d8; }
-.alkali_metal { background: #ffebee; border-bottom: 3px solid #ffab91; }
-.alkaline_earth_metal { background: #fff8e1; border-bottom: 3px solid #ffe082; }
-.metalloid { background: #e0f2f1; border-bottom: 3px solid #80cbc4; }
-.polyatomic_nonmetal { background: #e8eaf6; border-bottom: 3px solid #9fa8da; }
-.post_transition_metal { background: #e0f7fa; border-bottom: 3px solid #80deea; }
-.transition_metal { background: #fce4ec; border-bottom: 3px solid #f48fb1; }
+/* ═══ Category Colors ═══ */
+.diatomic_nonmetal        { background: #e3f2fd; border-bottom: 2px solid #90caf9; }
+.noble_gas                { background: #f3e5f5; border-bottom: 2px solid #ce93d8; }
+.alkali_metal             { background: #ffebee; border-bottom: 2px solid #ffab91; }
+.alkaline_earth_metal     { background: #fff8e1; border-bottom: 2px solid #ffe082; }
+.metalloid                { background: #e0f2f1; border-bottom: 2px solid #80cbc4; }
+.polyatomic_nonmetal      { background: #e8eaf6; border-bottom: 2px solid #9fa8da; }
+.post_transition_metal    { background: #e0f7fa; border-bottom: 2px solid #80deea; }
+.transition_metal         { background: #fce4ec; border-bottom: 2px solid #f48fb1; }
+.lanthanide               { background: #e8f5e9; border-bottom: 2px solid #a5d6a7; }
+.actinide                 { background: #fff3e0; border-bottom: 2px solid #ffcc80; }
+.unknown                  { background: #f5f5f5; border-bottom: 2px solid #e0e0e0; }
 
-/* Hover styling matching the category */
-.diatomic_nonmetal:hover { border-color: #90caf9; }
-.noble_gas:hover { border-color: #ce93d8; }
-.alkali_metal:hover { border-color: #ffab91; }
-.alkaline_earth_metal:hover { border-color: #ffe082; }
-.metalloid:hover { border-color: #80cbc4; }
-.polyatomic_nonmetal:hover { border-color: #9fa8da; }
-.post_transition_metal:hover { border-color: #80deea; }
-.transition_metal:hover { border-color: #f48fb1; }
+/* Hover glow per category */
+.diatomic_nonmetal:hover     { box-shadow: 0 6px 20px rgba(144, 202, 249, 0.4); }
+.noble_gas:hover             { box-shadow: 0 6px 20px rgba(206, 147, 216, 0.4); }
+.alkali_metal:hover          { box-shadow: 0 6px 20px rgba(255, 171, 145, 0.4); }
+.alkaline_earth_metal:hover  { box-shadow: 0 6px 20px rgba(255, 224, 130, 0.4); }
+.metalloid:hover             { box-shadow: 0 6px 20px rgba(128, 203, 196, 0.4); }
+.polyatomic_nonmetal:hover   { box-shadow: 0 6px 20px rgba(159, 168, 218, 0.4); }
+.post_transition_metal:hover { box-shadow: 0 6px 20px rgba(128, 222, 234, 0.4); }
+.transition_metal:hover      { box-shadow: 0 6px 20px rgba(244, 143, 177, 0.4); }
+.lanthanide:hover            { box-shadow: 0 6px 20px rgba(165, 214, 167, 0.4); }
+.actinide:hover              { box-shadow: 0 6px 20px rgba(255, 204, 128, 0.4); }
+.unknown:hover               { box-shadow: 0 6px 20px rgba(224, 224, 224, 0.4); }
 
+/* ═══ Series Marker (La/Ac placeholder in main grid) ═══ */
+.seriesMarker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #b2bec3;
+  background: linear-gradient(135deg, rgba(0,0,0,0.02), rgba(0,0,0,0.04));
+  border-radius: 6px;
+  border: 1px dashed #dfe6e9;
+  aspect-ratio: 1 / 1.1;
+}
+
+/* ═══ Lanthanide/Actinide Rows ═══ */
+.seriesSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 1100px;
+  padding: 0 2rem;
+}
+
+.seriesLabel {
+  writing-mode: horizontal-tb;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #636e72;
+  white-space: nowrap;
+  width: 80px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.seriesRow {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 3px;
+  flex: 1;
+}
+
+/* ═══ Responsive ═══ */
 @media (max-width: 768px) {
   .table {
-    min-width: 800px;
-    gap: 4px;
-  }
-
-  .element {
-    padding: 4px;
-    border-radius: 6px;
-  }
-
-  .symbol {
-    font-size: 1.2rem;
-  }
-
-  .name {
-    font-size: 0.5rem;
-  }
-
-  .atomicNum {
-    font-size: 0.6rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .table {
-    min-width: 650px;
-    gap: 3px;
+    min-width: 850px;
+    gap: 2px;
   }
 
   .element {
@@ -172,7 +271,48 @@
   }
 
   .symbol {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .name {
+    font-size: 0.4rem;
+  }
+
+  .atomicNum {
+    font-size: 0.5rem;
+  }
+
+  .legend {
+    max-width: 100%;
+    padding: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .legendItem {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .seriesSection {
+    min-width: 850px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    min-width: 700px;
+    gap: 1px;
+  }
+
+  .element {
+    padding: 2px;
+    border-radius: 3px;
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  .symbol {
+    font-size: 0.8rem;
   }
 
   .name {
@@ -180,6 +320,15 @@
   }
 
   .atomicNum {
-    font-size: 0.55rem;
+    font-size: 0.45rem;
+  }
+
+  .seriesSection {
+    min-width: 700px;
+  }
+
+  .seriesLabel {
+    width: 50px;
+    font-size: 0.5rem;
   }
 }

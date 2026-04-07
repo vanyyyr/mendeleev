@@ -197,6 +197,45 @@
   transform: scale(0.98);
 }
 
+/* Answer state classes */
+.optionCorrect {
+  background-color: #e8f5e9 !important;
+  border-color: #4caf50 !important;
+  color: #2e7d32 !important;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  animation: correctPulse 0.5s ease;
+}
+
+.optionIncorrect {
+  background-color: #ffebee !important;
+  border-color: #ef5350 !important;
+  color: #c62828 !important;
+  box-shadow: 0 0 0 2px rgba(239, 83, 80, 0.2);
+  animation: shake 0.4s ease;
+}
+
+.optionReveal {
+  border-color: #4caf50 !important;
+  color: #2e7d32 !important;
+}
+
+.optionDisabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
 .aiHint {
   margin-top: 1.5rem;
   padding: 1rem 1.5rem;
@@ -213,6 +252,22 @@
 
 .aiIcon {
   font-size: 1.5rem;
+}
+
+.aiHintLoading {
+  margin: 0;
+  font-style: italic;
+  color: #5d4037;
+}
+
+.dots {
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  0%, 20% { opacity: 1; }
+  50% { opacity: 0; }
+  80%, 100% { opacity: 1; }
 }
 
 .testHeader {

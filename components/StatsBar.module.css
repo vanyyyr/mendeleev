@@ -1,50 +1,65 @@
-.statsBar {
+.container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: #fff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 100;
+  flex-wrap: wrap;
 }
 
-.levelInfo {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.loading {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 0.5rem;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
-.levelBadge {
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.stat {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #0984e3, #74b9ff);
-  color: #fff;
+  gap: 0.5rem;
+}
+
+.statIcon {
   font-size: 1.2rem;
-  font-weight: 800;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(9, 132, 227, 0.3);
 }
 
-.levelText {
+.statLabel {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.statValue {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--foreground);
+  line-height: 1.2;
+}
+
+.xpSection {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-}
-
-.levelTitle {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #2d3436;
+  gap: 0.2rem;
+  min-width: 100px;
 }
 
 .xpBar {
-  width: 120px;
+  width: 100%;
   height: 6px;
   background: #f1f2f6;
   border-radius: 3px;
@@ -53,96 +68,61 @@
 
 .xpFill {
   height: 100%;
-  background: linear-gradient(90deg, #00b894, #55efc4);
+  background: linear-gradient(90deg, var(--success), #55efc4);
   border-radius: 3px;
-  transition: width 0.5s ease;
+  transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .xpText {
-  font-size: 0.75rem;
-  color: #636e72;
+  font-size: 0.65rem;
+  color: var(--text-muted);
   font-weight: 600;
-}
-
-.stats {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-}
-
-.statValue {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #2d3436;
-}
-
-.statValue.correct {
-  color: #00b894;
-}
-
-.statValue.streak {
-  color: #e17055;
-}
-
-.statValue.achievements {
-  color: #f39c12;
-}
-
-.statLabel {
-  font-size: 0.7rem;
-  color: #b2bec3;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
-  .statsBar {
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
+  .container {
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+    justify-content: center;
   }
 
-  .levelInfo {
-    width: 100%;
+  .xpSection {
+    min-width: 80px;
   }
 
-  .xpBar {
-    width: 100px;
+  .statLabel {
+    font-size: 0.55rem;
   }
 
-  .stats {
-    width: 100%;
-    justify-content: space-around;
+  .statValue {
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 480px) {
-  .statsBar {
-    padding: 0.5rem;
+  .container {
+    padding: 0.4rem 0.5rem;
+    gap: 0.3rem;
   }
 
-  .levelBadge {
-    width: 36px;
-    height: 36px;
+  .stat {
+    gap: 0.25rem;
+  }
+
+  .statIcon {
     font-size: 1rem;
-  }
-
-  .levelTitle {
-    font-size: 0.8rem;
   }
 
   .statValue {
-    font-size: 1rem;
+    font-size: 0.75rem;
   }
 
   .statLabel {
-    font-size: 0.6rem;
+    display: none;
+  }
+
+  .xpSection {
+    min-width: 60px;
   }
 }

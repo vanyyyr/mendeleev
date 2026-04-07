@@ -49,7 +49,11 @@ export default function AnalyticsPage() {
 
   const fetchAnalytics = async (pwd: string) => {
     try {
-      const response = await fetch(`/api/analytics?p=${pwd}`);
+      const response = await fetch('/api/analytics', {
+        headers: {
+          'Authorization': `Bearer ${pwd}`
+        }
+      });
       if (!response.ok) {
         setError('Неверный пароль или ошибка сервера');
         setData(null);
@@ -132,13 +136,32 @@ export default function AnalyticsPage() {
           <button onClick={() => fetchAnalytics(password)} className={styles.refreshButton}>
             Обновить
           </button>
-          <a
-            href={`/api/export/csv?p=${password}`}
-            download
+          <button
+            onClick={async () => {
+              try {
+                const response = await fetch('/api/export/csv', {
+                  headers: { 'Authorization': `Bearer ${password}` }
+                });
+                if (!response.ok) throw new Error('Export failed');
+                const text = await response.text();
+                const blob = new Blob([text], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `mendeleev-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+              } catch (e) {
+                console.error(e);
+                alert('Ошибка экспорта');
+              }
+            }}
             className={styles.exportButton}
           >
             Экспорт CSV
-          </a>
+          </button>
           <button onClick={() => router.push('/')} className={styles.backButton}>
             ← К таблице
           </button>

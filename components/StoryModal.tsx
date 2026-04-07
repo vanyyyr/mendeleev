@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { ChemicalElement } from '../lib/elements';
 import styles from './StoryModal.module.css';
-import Mascot from './Mascot';
+import StoryNarration from './StoryNarration';
+import QuizSection from './QuizSection';
+import AiHintPanel from './AiHintPanel';
 import { getOrCreateUserId } from '../lib/session';
 import { trackEvent } from '../lib/telemetry';
 import { getRecommendedNextElement, getAdjacentElement } from '../lib/zpd-engine';
@@ -39,12 +41,53 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
   const [recommendation, setRecommendation] = useState<{ element: ChemicalElement; reason: string } | null>(null);
   const [achievementQueue, setAchievementQueue] = useState<Array<{ code: string; name: string; description: string; icon: string }>>([]);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // ═══ Body scroll lock + focus management ═══
+  useEffect(() => {
+    document.body.classList.add('modal-open');
+    closeButtonRef.current?.focus();
+    return () => { document.body.classList.remove('modal-open'); };
+  }, []);
+
+  // ═══ Escape key ═══
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  // ═══ Focus trap ═══
+  useEffect(() => {
+    const modal = modalRef.current;
+    if (!modal) return;
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const focusable = modal.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    };
+    document.addEventListener('keydown', handleTab);
+    return () => document.removeEventListener('keydown', handleTab);
+  }, []);
+
+  // ═══ Init user ID + track view ═══
   useEffect(() => {
     const id = getOrCreateUserId();
     setUserId(id);
     trackEvent({ userId: id, actionType: 'ELEMENT_VIEWED', elementId: element.atomicNum });
   }, [element.atomicNum]);
 
+  // ═══ Fetch element data ═══
   useEffect(() => {
     const fetchElementData = async () => {
       try {
@@ -64,12 +107,16 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
         setQuestions([]);
       }
     };
-
     fetchElementData();
   }, [element.atomicNum]);
 
-  const story = elementData?.description || `Привет! Я — ${element.name}, живой атом! Мой номер в таблице — ${element.atomicNum}. В чистом виде я могу быть очень активным, но в природе чаще встречаюсь в виде соединений. Я играю огромную роль в повседневной жизни!`;
+  // ═══ Story text ═══
+  const story = useMemo(
+    () => elementData?.description || `Привет! Я — ${element.name}, живой атом! Мой номер в таблице — ${element.atomicNum}. В чистом виде я могу быть очень активным, но в природе чаще встречаюсь в виде соединений. Я играю огромную роль в повседневной жизни!`,
+    [elementData?.description, element.name, element.atomicNum]
+  );
 
+  // ═══ Typewriter + TTS ═══
   useEffect(() => {
     let i = 0;
     setDisplayedStory('');
@@ -84,52 +131,46 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
       const utterance = new SpeechSynthesisUtterance(story);
       utterance.lang = 'ru-RU';
       utterance.rate = 1.0;
-
-      utterance.onend = () => {
-        setEmotion('happy');
-      };
-
+      utterance.onend = () => setEmotion('happy');
       window.speechSynthesis.speak(utterance);
     }
 
     const timer = setInterval(() => {
       setDisplayedStory((prev) => prev + story.charAt(i));
       i++;
-      if (i >= story.length) {
-        clearInterval(timer);
-      }
+      if (i >= story.length) clearInterval(timer);
     }, 40);
 
     return () => {
       clearInterval(timer);
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     };
-  }, [element.name, story]);
+  }, [story]);
 
+  // ═══ Quiz state ═══
   const currentQuestion = questions[currentQuestionIndex];
-
-  const mockQuestion = `Сколько электронов находится на моей внешней оболочке, если я нахожусь в ${element.group} группе?`;
-  const mockCorrect = element.group > 10 ? element.group - 10 : element.group;
-  const mockOptions = [
+  const mockCorrect = element.group > 10 ? element.group - 10 : (element.group || 1);
+  const mockOptions = useMemo(() => [
     mockCorrect.toString(),
     (mockCorrect + 1).toString(),
     (mockCorrect - 1 === 0 ? 8 : mockCorrect - 1).toString()
-  ].sort(() => Math.random() - 0.5);
+  ].sort(() => Math.random() - 0.5), [mockCorrect]);
 
   const displayQuestion = currentQuestion || {
     id: 0,
-    text: mockQuestion,
+    text: `Сколько электронов находится на моей внешней оболочке, если я нахожусь в ${element.group || 'особой'} группе?`,
     correctAnswer: mockCorrect.toString(),
     difficulty: 1,
     options: mockOptions,
-    explanation: `Номер группы (${element.group}) подсказывает количество валентных электронов. Для главных подгрупп: ${element.group} - 10 = ${mockCorrect}.`
+    explanation: `Номер группы подсказывает количество валентных электронов.`
   };
 
+  const allQuestionsCompleted = selectedOption === displayQuestion.correctAnswer &&
+    questions.length > 0 && currentQuestionIndex === questions.length - 1;
+
+  // ═══ Answer handler ═══
   const handleSelect = async (option: string) => {
     if (selectedOption === displayQuestion.correctAnswer) return;
-
     setSelectedOption(option);
 
     if (option === displayQuestion.correctAnswer) {
@@ -138,24 +179,17 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
       setShowExplanation(true);
       setCorrectCount(prev => prev + 1);
 
-      trackEvent({
-        userId,
-        actionType: 'ANSWER_CORRECT',
-        elementId: element.atomicNum,
-        questionId: displayQuestion.id,
-        userAnswer: option,
-      });
+      trackEvent({ userId, actionType: 'ANSWER_CORRECT', elementId: element.atomicNum, questionId: displayQuestion.id, userAnswer: option });
 
       fetch('/api/progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, wasCorrect: true, elementId: element.atomicNum }),
       }).then(res => res.json()).then(data => {
         if (data?.adaptiveResult) {
           const rec = getRecommendedNextElement(element.atomicNum, true);
           if (rec) setRecommendation(rec);
         }
-        if (data?.newAchievements && data.newAchievements.length > 0) {
+        if (data?.newAchievements?.length > 0) {
           setAchievementQueue(prev => [...prev, ...data.newAchievements]);
         }
       }).catch(() => {});
@@ -165,38 +199,24 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
       setHint(null);
       setShowExplanation(true);
 
-      trackEvent({
-        userId,
-        actionType: 'ANSWER_INCORRECT',
-        elementId: element.atomicNum,
-        questionId: displayQuestion.id,
-        userAnswer: option,
-      });
+      trackEvent({ userId, actionType: 'ANSWER_INCORRECT', elementId: element.atomicNum, questionId: displayQuestion.id, userAnswer: option });
 
       fetch('/api/progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, wasCorrect: false, elementId: element.atomicNum }),
       }).catch(() => {});
 
       try {
         const response = await fetch('/api/ai-tutor', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            element,
-            question: displayQuestion.text,
-            incorrectAnswer: option,
-            correctAnswer: displayQuestion.correctAnswer,
-            difficulty: displayQuestion.difficulty,
-            consecutiveIncorrect: 1,
+            element, question: displayQuestion.text,
+            incorrectAnswer: option, correctAnswer: displayQuestion.correctAnswer,
+            difficulty: displayQuestion.difficulty, consecutiveIncorrect: 1,
           })
         });
 
-        if (!response.ok) {
-          throw new Error('Network error');
-        }
-
+        if (!response.ok) throw new Error('Network error');
         const reader = response.body?.getReader();
         const decoder = new TextDecoder();
         let aiText = '';
@@ -207,26 +227,15 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-
             const chunk = decoder.decode(value);
             const textChunk = chunk.split('\\n').join('\n')
-              .replace(/0:"/g, '')
-              .replace(/"/g, '')
-              .replace(/\n\s*\n/g, '\n');
-
+              .replace(/0:"/g, '').replace(/"/g, '').replace(/\n\s*\n/g, '\n');
             aiText += textChunk;
             setHint(prev => prev + textChunk);
           }
         }
 
-        trackEvent({
-          userId,
-          actionType: 'HINT_REQUESTED',
-          elementId: element.atomicNum,
-          questionId: displayQuestion.id,
-          userAnswer: option,
-          aiHint: aiText,
-        });
+        trackEvent({ userId, actionType: 'HINT_REQUESTED', elementId: element.atomicNum, questionId: displayQuestion.id, userAnswer: option, aiHint: aiText });
       } catch (error) {
         console.error(error);
         setEmotion('speaking');
@@ -247,179 +256,76 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
     }
   };
 
-  const handleNavigateToElement = () => {
-    if (recommendation && onNavigate) {
-      onNavigate(recommendation.element);
-    }
-  };
-
   const prevElement = getAdjacentElement(element.atomicNum, 'prev');
   const nextElement = getAdjacentElement(element.atomicNum, 'next');
 
-  const handlePrevElement = () => {
-    if (prevElement && onNavigate) onNavigate(prevElement);
-  };
-
-  const handleNextElement = () => {
-    if (nextElement && onNavigate) onNavigate(nextElement);
-  };
-
-  const dismissAchievement = () => {
+  const dismissAchievement = useCallback(() => {
     setAchievementQueue(prev => prev.slice(1));
-  };
-
-  const difficultyLabel = (d: number) => {
-    if (d === 1) return 'Лёгкий';
-    if (d === 2) return 'Средний';
-    return 'Сложный';
-  };
-
-  const progressPercent = questions.length > 0
-    ? ((currentQuestionIndex + (selectedOption === displayQuestion.correctAnswer ? 1 : 0)) / questions.length) * 100
-    : 0;
-
-  const allQuestionsCompleted = selectedOption === displayQuestion.correctAnswer &&
-    questions.length > 0 &&
-    currentQuestionIndex === questions.length - 1;
+  }, []);
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title" ref={modalRef}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        {/* ═══ Header ═══ */}
         <div className={styles.header}>
           <div className={styles.navButtons}>
             <button
               className={`${styles.navButton} ${!prevElement ? styles.navButtonDisabled : ''}`}
-              onClick={handlePrevElement}
+              onClick={() => prevElement && onNavigate?.(prevElement)}
               disabled={!prevElement}
               aria-label="Предыдущий элемент"
-            >
-              ←
-            </button>
+            >←</button>
           </div>
           <div className={styles.titles}>
-            <h2>Знакомство: {element.name}</h2>
-            <p>Атомный номер: {element.atomicNum} • Молярная масса: {element.atomicMass}</p>
+            <h2 id="modal-title">Знакомство: {element.name}</h2>
+            <p>Атомный номер: {element.atomicNum} • {element.symbol} • Масса: {element.atomicMass}</p>
           </div>
           <div className={styles.headerActions}>
             <button
               className={`${styles.navButton} ${!nextElement ? styles.navButtonDisabled : ''}`}
-              onClick={handleNextElement}
+              onClick={() => nextElement && onNavigate?.(nextElement)}
               disabled={!nextElement}
               aria-label="Следующий элемент"
-            >
-              →
-            </button>
-            <button className={styles.closeButton} onClick={onClose}>×</button>
+            >→</button>
+            <button ref={closeButtonRef} className={styles.closeButton} onClick={onClose} aria-label="Закрыть">×</button>
           </div>
         </div>
 
+        {/* ═══ Content ═══ */}
         <div className={styles.content}>
-          <div className={styles.storySection}>
-            <Mascot element={element} emotion={emotion} />
-            <div className={styles.chatBubble}>
-              {displayedStory}
-              {elementData?.applications && (
-                <>
-                  <br /><br />
-                  <strong>Применение:</strong> {elementData.applications}
-                </>
-              )}
-            </div>
-          </div>
+          <StoryNarration
+            element={element}
+            emotion={emotion}
+            displayedStory={displayedStory}
+            applications={elementData?.applications}
+          />
 
-          <div className={styles.testSection}>
-            <div className={styles.testHeader}>
-              <h3>Проверка знаний</h3>
-              {questions.length > 0 && (
-                <span className={styles.questionCounter}>
-                  {currentQuestionIndex + 1} / {questions.length}
-                </span>
-              )}
-            </div>
+          <QuizSection
+            question={displayQuestion}
+            selectedOption={selectedOption}
+            showExplanation={showExplanation}
+            questionsTotal={questions.length}
+            currentIndex={currentQuestionIndex}
+            correctCount={correctCount}
+            allCompleted={allQuestionsCompleted}
+            onSelect={handleSelect}
+            onNext={handleNextQuestion}
+            hasNextQuestion={currentQuestionIndex < questions.length - 1}
+          />
 
-            {questions.length > 0 && (
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-            )}
+          <AiHintPanel hint={hint} isLoading={isLoadingHint} />
 
-            <div className={styles.questionMeta}>
-              <span className={`${styles.difficultyBadge} ${styles[`difficulty${displayQuestion.difficulty}`]}`}>
-                {difficultyLabel(displayQuestion.difficulty)}
-              </span>
-            </div>
-
-            <p className={styles.questionText}>{displayQuestion.text}</p>
-
-            <div className={styles.testOptions}>
-              {displayQuestion.options.map((option, idx) => {
-                let btnStyle = {};
-                if (selectedOption === option) {
-                  btnStyle = option === displayQuestion.correctAnswer
-                    ? { backgroundColor: '#e8f5e9', borderColor: '#4caf50', color: '#2e7d32' }
-                    : { backgroundColor: '#ffebee', borderColor: '#ef5350', color: '#c62828' };
-                } else if (selectedOption && option === displayQuestion.correctAnswer) {
-                  btnStyle = { borderColor: '#4caf50', color: '#2e7d32' };
-                }
-
-                return (
-                  <button
-                    key={idx}
-                    className={styles.optionButton}
-                    onClick={() => handleSelect(option)}
-                    style={btnStyle}
-                    disabled={selectedOption === displayQuestion.correctAnswer}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-
-            {showExplanation && displayQuestion.explanation && selectedOption !== displayQuestion.correctAnswer && (
-              <div className={styles.explanation}>
-                <strong>Объяснение:</strong> {displayQuestion.explanation}
-              </div>
-            )}
-
-            {isLoadingHint && (
-              <div className={styles.aiHint}>
-                <span className={styles.aiIcon}>🤖</span>
-                <p>Ваш атом обдумывает подсказку...</p>
-              </div>
-            )}
-
-            {!isLoadingHint && hint && (
-              <div className={styles.aiHint}>
-                <span className={styles.aiIcon}>💡</span>
-                <p>{hint}</p>
-              </div>
-            )}
-
-            {!allQuestionsCompleted && selectedOption === displayQuestion.correctAnswer && questions.length > 0 && currentQuestionIndex < questions.length - 1 && (
-              <button className={styles.nextButton} onClick={handleNextQuestion}>
-                Следующий вопрос →
+          {recommendation && (
+            <div className={styles.recommendation}>
+              <p className={styles.recommendationText}>{recommendation.reason}</p>
+              <button
+                className={styles.nextElementButton}
+                onClick={() => recommendation && onNavigate?.(recommendation.element)}
+              >
+                Изучить {recommendation.element.name} ({recommendation.element.symbol}) →
               </button>
-            )}
-
-            {allQuestionsCompleted && (
-              <div className={styles.completed}>
-                <p>Ты ответил правильно на {correctCount + 1} из {questions.length} вопросов!</p>
-              </div>
-            )}
-
-            {recommendation && (
-              <div className={styles.recommendation}>
-                <p className={styles.recommendationText}>{recommendation.reason}</p>
-                <button className={styles.nextElementButton} onClick={handleNavigateToElement}>
-                  Изучить {recommendation.element.name} ({recommendation.element.symbol}) →
-                </button>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

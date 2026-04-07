@@ -77,6 +77,10 @@ model TelemetryEvent {
   userAnswer     String?
   aiHint         String?  // Сгенерированная подсказка
   timestamp      DateTime @default(now())
+
+  @@index([userId, actionType])
+  @@index([elementId])
+  @@index([timestamp])
 }
 
 model Achievement {

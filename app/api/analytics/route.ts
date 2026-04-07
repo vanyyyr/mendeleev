@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma, isDbAvailable } from '@/lib/prisma';
+import { getPrisma, isDbAvailable } from '@/lib/prisma';
 
 export async function GET(req: Request) {
   try {
@@ -7,36 +7,38 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const password = searchParams.get('p');
+    const db = getPrisma();
+
+    const authHeader = req.headers.get('authorization');
+    const password = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
     if (password !== process.env.ANALYTICS_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const totalUsers = await prisma.telemetryEvent.groupBy({
+    const totalUsers = await db.telemetryEvent.groupBy({
       by: ['userId'],
     });
 
-    const totalEvents = await prisma.telemetryEvent.count();
+    const totalEvents = await db.telemetryEvent.count();
 
-    const correctAnswers = await prisma.telemetryEvent.count({
+    const correctAnswers = await db.telemetryEvent.count({
       where: { actionType: 'ANSWER_CORRECT' },
     });
 
-    const incorrectAnswers = await prisma.telemetryEvent.count({
+    const incorrectAnswers = await db.telemetryEvent.count({
       where: { actionType: 'ANSWER_INCORRECT' },
     });
 
-    const hintsRequested = await prisma.telemetryEvent.count({
+    const hintsRequested = await db.telemetryEvent.count({
       where: { actionType: 'HINT_REQUESTED' },
     });
 
-    const elementsViewed = await prisma.telemetryEvent.count({
+    const elementsViewed = await db.telemetryEvent.count({
       where: { actionType: 'ELEMENT_VIEWED' },
     });
 
-    const errorByElement = await prisma.$queryRaw<
+    const errorByElement = await db.$queryRaw<
       Array<{ elementId: number; count: number }>
     >`
       SELECT "elementId", COUNT(*)::int as count
@@ -47,7 +49,7 @@ export async function GET(req: Request) {
       ORDER BY count DESC
     `;
 
-    const correctByElement = await prisma.$queryRaw<
+    const correctByElement = await db.$queryRaw<
       Array<{ elementId: number; count: number }>
     >`
       SELECT "elementId", COUNT(*)::int as count
@@ -58,7 +60,7 @@ export async function GET(req: Request) {
       ORDER BY count DESC
     `;
 
-    const eventsByDay = await prisma.$queryRaw<
+    const eventsByDay = await db.$queryRaw<
       Array<{ day: string; correct: number; incorrect: number }>
     >`
       SELECT 
@@ -71,7 +73,7 @@ export async function GET(req: Request) {
       ORDER BY day ASC
     `;
 
-    const hintsByElement = await prisma.$queryRaw<
+    const hintsByElement = await db.$queryRaw<
       Array<{ elementId: number; count: number }>
     >`
       SELECT "elementId", COUNT(*)::int as count
@@ -82,7 +84,7 @@ export async function GET(req: Request) {
       ORDER BY count DESC
     `;
 
-    const topUsers = await prisma.$queryRaw<
+    const topUsers = await db.$queryRaw<
       Array<{ userId: string; totalAnswers: number; correctAnswers: number; accuracy: number }>
     >`
       SELECT 
@@ -101,7 +103,7 @@ export async function GET(req: Request) {
       LIMIT 10
     `;
 
-    const recentEvents = await prisma.telemetryEvent.findMany({
+    const recentEvents = await db.telemetryEvent.findMany({
       orderBy: { timestamp: 'desc' },
       take: 50,
     });
