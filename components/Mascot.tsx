@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './Mascot.module.css';
-import Image from 'next/image';
 import { ChemicalElement } from '../lib/elements';
 
 interface MascotProps {
@@ -29,14 +28,19 @@ export default function Mascot({ element, emotion = 'happy' }: MascotProps) {
       style={{"--glow-color": mainColor} as React.CSSProperties}
     >
       <div className={styles.mascotImageWrapper}>
-        <Image 
-          src="/mascot.png"
-          alt="AI Tutor Mascot"
-          width={100}
+        <svg 
+          viewBox="0 0 100 100" 
+          width={100} 
           height={100}
           className={styles.mascotImage}
-          priority
-        />
+        >
+          <circle cx="50" cy="50" r="45" fill={mainColor}/>
+          <circle cx="35" cy="40" r="8" fill="white"/>
+          <circle cx="65" cy="40" r="8" fill="white"/>
+          <circle cx="37" cy="38" r="3" fill={mainColor}/>
+          <circle cx="67" cy="38" r="3" fill={mainColor}/>
+          <path d="M 30 60 Q 50 75 70 60" stroke="white" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        </svg>
         <div className={styles.elementBadge} style={{ backgroundColor: mainColor }}>
           {element.symbol}
         </div>
