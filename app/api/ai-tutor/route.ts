@@ -81,8 +81,6 @@ ${prevHintsContext}
       messages: [
         { role: 'user', content: 'Я ответил неверно. Помоги мне понять, где я ошибся, но не говори правильный ответ.' }
       ],
-      maxTokens: 200,
-      temperature: 0.7,
     });
 
     return result.toTextStreamResponse();
