@@ -49,10 +49,11 @@ export default function AIChat() {
           const { done, value } = await reader.read();
           if (done) break;
           const chunk = decoder.decode(value);
-          const textChunk = chunk
-            .replace(/data:\s*/g, '')
-            .replace(/^"|"$/g, '')
-            .replace(/"\s*$/gm, '');
+           const textChunk = chunk
+             .replace(/data:\s*/g, '')
+             // Be more careful with quote removal - only remove quotes that are clearly wrappers
+             .replace(/^"(.*)"$/, '$1')
+             .replace(/"\s*$/gm, '');
           if (textChunk.trim()) {
             assistantMessage += textChunk;
             setMessages(prev => {
