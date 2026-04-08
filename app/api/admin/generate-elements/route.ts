@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     for (const el of missingElements) {
       // Use AI to generate content
       const { object } = await generateObject({
-        model: openRouter('google/gemini-2.0-flash-lite-preview-02-05:free'),
+        model: openRouter('google/gemma-4-31b-it:free'),
         schema: z.object({
           description: z.string(),
           applications: z.string(),

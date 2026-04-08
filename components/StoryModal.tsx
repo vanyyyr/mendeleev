@@ -112,7 +112,7 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
 
    // ═══ Story text ═══
    const story = useMemo(
-     () => elementData?.description || `ППпривет! Я — ${element.name}, живой атом! Мой номер в таблице — ${element.atomicNum}. В чистом виде я могу быть очень активным, но в природе чаще встречаюсь в виде соединений. Я играю огромную роль в повседневной жизни!`,
+     () => elementData?.description || `Привет! Я — ${element.name}, живой атом! Мой номер в таблице — ${element.atomicNum}. В чистом виде я могу быть очень активным, но в природе чаще встречаюсь в виде соединений. Я играю огромную роль в повседневной жизни!`,
      [elementData?.description, element.name, element.atomicNum]
    );
 

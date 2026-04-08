@@ -42,7 +42,7 @@ export async function POST(req: Request) {
 Начни с приветствия и предложи помощь с химией!`;
 
     const result = await streamText({
-      model: openRouter('google/gemini-2.0-flash-lite-preview-02-05:free'),
+      model: openRouter('google/gemma-4-31b-it:free'),
       system: systemPrompt,
       messages: messages || [],
     });

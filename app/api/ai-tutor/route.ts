@@ -81,7 +81,7 @@ ${prevHintsContext}
 8. Если это элемент из лантаноидов/актиноидов, расскажи об особенностях f-элементов`;
 
     const result = await streamText({
-      model: openRouter('google/gemini-2.0-flash-lite-preview-02-05:free'),
+      model: openRouter('google/gemma-4-31b-it:free'),
       system: systemPrompt,
       messages: [
         { role: 'user', content: 'Я ответил неверно. Помоги мне понять, где я ошибся, но не говори правильный ответ.' }
