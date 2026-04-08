@@ -90,3 +90,30 @@
     font-size: 1rem;
   }
 }
+
+/* Dark theme for AchievementToast */
+[data-theme="dark"] .toast {
+  background: linear-gradient(135deg, #3d3222, #483d22);
+  border: 2px solid #ffd54f;
+  box-shadow: 0 8px 32px rgba(255, 193, 7, 0.4);
+}
+
+[data-theme="dark"] .label {
+  color: #ffd54f;
+}
+
+[data-theme="dark"] .name {
+  color: #f5f5f7;
+}
+
+[data-theme="dark"] .description {
+  color: #98989d;
+}
+
+[data-theme="dark"] .closeButton {
+  color: #98989d;
+}
+
+[data-theme="dark"] .closeButton:hover {
+  color: #f5f5f7;
+}

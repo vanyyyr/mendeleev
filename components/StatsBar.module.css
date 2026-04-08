@@ -126,3 +126,5 @@
     min-width: 60px;
   }
 }
+
+/* Dark theme for StatsBar - uses CSS variables from globals.css */

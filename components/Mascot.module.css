@@ -148,9 +148,24 @@
     height: 90px;
     margin-right: 0.5rem;
   }
-  
+   
   .mascotContainer::before {
     width: 110px;
     height: 110px;
   }
+}
+
+/* Dark theme for Mascot */
+[data-theme="dark"] .mascotContainer::before {
+  background: radial-gradient(circle, rgba(41, 151, 255, 0.3) 0%, transparent 70%);
+}
+
+[data-theme="dark"] .happy .mascotImageWrapper,
+[data-theme="dark"] .thinking .mascotImageWrapper,
+[data-theme="dark"] .speaking .mascotImageWrapper {
+  filter: brightness(1.1) drop-shadow(0 0 15px rgba(41, 151, 255, 0.5));
+}
+
+[data-theme="dark"] .speaking .mascotImageWrapper {
+  filter: drop-shadow(0 0 25px rgba(41, 151, 255, 0.7));
 }
