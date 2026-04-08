@@ -118,7 +118,8 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
 
   // ═══ Typewriter + TTS ═══
   useEffect(() => {
-    let i = 0;
+    let charIndex = 0;
+    let cancelled = false;
     setDisplayedStory('');
     setEmotion('speaking');
     setSelectedOption(null);
@@ -136,12 +137,14 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
     }
 
     const timer = setInterval(() => {
-      setDisplayedStory((prev) => prev + story.charAt(i));
-      i++;
-      if (i >= story.length) clearInterval(timer);
+      if (cancelled) { clearInterval(timer); return; }
+      charIndex++;
+      setDisplayedStory(story.substring(0, charIndex));
+      if (charIndex >= story.length) clearInterval(timer);
     }, 40);
 
     return () => {
+      cancelled = true;
       clearInterval(timer);
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     };
