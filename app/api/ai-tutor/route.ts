@@ -21,8 +21,11 @@ export async function POST(req: Request) {
     } = body;
 
     if (!process.env.MIMO_API_KEY) {
+      console.error('MIMO_API_KEY is missing in environment variables');
       return NextResponse.json({ error: 'MIMO_API_KEY not configured' }, { status: 500 });
     }
+
+    console.log('Sending tutor request to MIMO for element:', element?.name);
 
     const difficultyContext = difficulty === 1
       ? 'Ученик начального уровня. Используй простые аналогии и бытовые примеры.'

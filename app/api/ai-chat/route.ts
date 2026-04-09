@@ -13,8 +13,11 @@ export async function POST(req: Request) {
     const { messages, context } = body;
 
     if (!process.env.MIMO_API_KEY) {
+      console.error('MIMO_API_KEY is missing in environment variables');
       return NextResponse.json({ error: 'MIMO_API_KEY not configured' }, { status: 500 });
     }
+
+    console.log('Sending request to Xiaomi MIMO with messages:', messages?.length);
 
     const systemPrompt = `Ты — эмпатичный AI-репетитор по химии для школьников 8-11 классов. 
 Ты знаешь ВСЮ таблицу Менделеева (118 элементов) и можешь ответить на ЛЮБОЙ вопрос о химии.

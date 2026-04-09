@@ -28,14 +28,17 @@ export default function AIChat() {
 
     const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }, { role: 'assistant', content: '' }]);
+    const history = messages.filter(m => m.content.trim() !== '');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
+
+    let assistantMsgId = -1;
 
     try {
       const response = await fetch('/api/ai-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, { role: 'user', content: userMessage }] })
+        body: JSON.stringify({ messages: [...history, { role: 'user', content: userMessage }] })
       });
 
       if (!response.ok) throw new Error('Network error');
@@ -45,20 +48,32 @@ export default function AIChat() {
       let assistantMessage = '';
 
       if (reader) {
+        setMessages(prev => {
+          assistantMsgId = prev.length;
+          return [...prev, { role: 'assistant', content: '' }];
+        });
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-           const textChunk = chunk
-             .replace(/data:\s*/g, '')
-             // Be more careful with quote removal - only remove quotes that are clearly wrappers
-             .replace(/^"(.*)"$/, '$1')
-             .replace(/"\s*$/gm, '');
-          if (textChunk.trim()) {
-            assistantMessage += textChunk;
+          
+          let chunk = decoder.decode(value, { stream: true });
+          
+          // Clean up potential Data Stream Protocol prefixes (0:", 2:", etc) 
+          // while keeping raw text if it's a simple text stream
+          if (chunk.startsWith('0:"')) {
+            chunk = chunk.substring(3, chunk.length - 1).replace(/\\n/g, '\n').replace(/\\"/g, '"');
+          } else if (chunk.startsWith('0:')) {
+            chunk = chunk.substring(2);
+          }
+
+          if (chunk) {
+            assistantMessage += chunk;
             setMessages(prev => {
               const newMessages = [...prev];
-              newMessages[newMessages.length - 1] = { role: 'assistant', content: assistantMessage };
+              if (assistantMsgId !== -1) {
+                newMessages[assistantMsgId] = { role: 'assistant', content: assistantMessage };
+              }
               return newMessages;
             });
           }
