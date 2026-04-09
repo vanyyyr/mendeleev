@@ -2,19 +2,9 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
 
-const openRouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-  fetch: async (url, options) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-        'X-Title': 'Mendeleev AI Chat',
-      },
-    });
-  },
+const mimo = createOpenAI({
+  baseURL: 'https://api.xiaomimimo.com/v1',
+  apiKey: process.env.MIMO_API_KEY,
 });
 
 export async function POST(req: Request) {
@@ -22,8 +12,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { messages, context } = body;
 
-    if (!process.env.OPENROUTER_API_KEY) {
-      return NextResponse.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 });
+    if (!process.env.MIMO_API_KEY) {
+      return NextResponse.json({ error: 'MIMO_API_KEY not configured' }, { status: 500 });
     }
 
     const systemPrompt = `Ты — эмпатичный AI-репетитор по химии для школьников 8-11 классов. 
@@ -42,7 +32,7 @@ export async function POST(req: Request) {
 Начни с приветствия и предложи помощь с химией!`;
 
     const result = await streamText({
-      model: openRouter('google/gemma-2-9b-it:free'),
+      model: mimo('mimo-v2-flash'),
       system: systemPrompt,
       messages: messages || [],
     });

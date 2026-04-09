@@ -5,19 +5,9 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
-const openRouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-  fetch: async (url, options) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-        'X-Title': 'Mendeleev AI Seed Gen',
-      },
-    });
-  },
+const mimo = createOpenAI({
+  baseURL: 'https://api.xiaomimimo.com/v1',
+  apiKey: process.env.MIMO_API_KEY,
 });
 
 export const maxDuration = 300;
@@ -52,7 +42,7 @@ export async function POST(req: Request) {
     for (const el of missingElements) {
       // Use AI to generate content
       const { object } = await generateObject({
-        model: openRouter('google/gemma-4-31b-it:free'),
+        model: mimo('mimo-v2-flash'),
         schema: z.object({
           description: z.string(),
           applications: z.string(),

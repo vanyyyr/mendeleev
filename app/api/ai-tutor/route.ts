@@ -2,19 +2,9 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { NextResponse } from 'next/server';
 
-const openRouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-  fetch: async (url, options) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-        'X-Title': 'Mendeleev AI Tutor',
-      },
-    });
-  },
+const mimo = createOpenAI({
+  baseURL: 'https://api.xiaomimimo.com/v1',
+  apiKey: process.env.MIMO_API_KEY,
 });
 
 export async function POST(req: Request) {
@@ -30,8 +20,8 @@ export async function POST(req: Request) {
       previousHints = [],
     } = body;
 
-    if (!process.env.OPENROUTER_API_KEY) {
-      return NextResponse.json({ error: 'OPENROUTER_API_KEY not configured' }, { status: 500 });
+    if (!process.env.MIMO_API_KEY) {
+      return NextResponse.json({ error: 'MIMO_API_KEY not configured' }, { status: 500 });
     }
 
     const difficultyContext = difficulty === 1
@@ -81,7 +71,7 @@ ${prevHintsContext}
 8. Если это элемент из лантаноидов/актиноидов, расскажи об особенностях f-элементов`;
 
     const result = await streamText({
-      model: openRouter('google/gemma-2-9b-it:free'),
+      model: mimo('mimo-v2-flash'),
       system: systemPrompt,
       messages: [
         { role: 'user', content: 'Я ответил неверно. Помоги мне понять, где я ошибся, но не говори правильный ответ.' }
