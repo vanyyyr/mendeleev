@@ -230,7 +230,7 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const chunk = decoder.decode(value);
+            const chunk = decoder.decode(value, { stream: true });
             const textChunk = chunk
               .replace(/data:\s*/g, '')
               .split('\\n').join('\n')

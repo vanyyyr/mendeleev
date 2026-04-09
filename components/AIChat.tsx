@@ -28,7 +28,7 @@ export default function AIChat() {
 
     const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }, { role: 'assistant', content: '' }]);
     setIsLoading(true);
 
     try {
@@ -48,7 +48,7 @@ export default function AIChat() {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          const chunk = decoder.decode(value);
+          const chunk = decoder.decode(value, { stream: true });
            const textChunk = chunk
              .replace(/data:\s*/g, '')
              // Be more careful with quote removal - only remove quotes that are clearly wrappers
