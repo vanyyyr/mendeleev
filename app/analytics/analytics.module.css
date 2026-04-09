@@ -85,8 +85,9 @@
 .errorCard {
   max-width: 400px;
   margin: 15vh auto;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   padding: 2.5rem;
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
@@ -448,8 +449,9 @@
 [data-theme="dark"] .chartCard,
 [data-theme="dark"] .recentSection,
 [data-theme="dark"] .loginCard {
-  background: rgba(28, 28, 30, 0.6);
-  backdrop-filter: blur(20px);
+  background: rgba(28, 28, 30, 0.75);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-color: rgba(255, 255, 255, 0.1);
 }
 

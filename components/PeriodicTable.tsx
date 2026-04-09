@@ -14,14 +14,27 @@ export default function PeriodicTable({ externalSelection, onExternalClear }: Pe
   const [selectedElement, setSelectedElement] = useState<ChemicalElement | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  // Audio for element clicks
+  const playClickSound = useCallback(() => {
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(e => console.warn('Audio play failed:', e));
+    } catch (e) {
+      console.warn('Audio initialization failed:', e);
+    }
+  }, []);
+
   useEffect(() => {
     if (externalSelection) {
       setSelectedElement(externalSelection);
+      playClickSound();
     }
-  }, [externalSelection]);
+  }, [externalSelection, playClickSound]);
 
   const handleElementClick = (element: ChemicalElement) => {
     setSelectedElement(element);
+    playClickSound();
   };
 
   const handleNavigate = (element: ChemicalElement) => {

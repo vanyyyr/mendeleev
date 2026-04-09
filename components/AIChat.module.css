@@ -30,8 +30,9 @@
   max-width: calc(100vw - 48px);
   height: 520px;
   max-height: calc(100vh - 120px);
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -214,11 +215,11 @@
 
 /* Dark theme for AI Chat - matching the colorful light theme style */
 [data-theme="dark"] .chatWindow {
-  background: #000000;
+  background: rgba(0, 0, 0, 0.85);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
   overflow: hidden;
+  will-change: transform, opacity;
 }
 
 [data-theme="dark"] .chatWindow::before {
@@ -234,8 +235,9 @@
 }
 
 [data-theme="dark"] .chatHeader {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   color: #f5f5f7;
   font-weight: 600;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -298,8 +300,9 @@
 
 [data-theme="dark"] .inputArea {
   padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   gap: 10px;
