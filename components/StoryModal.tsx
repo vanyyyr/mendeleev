@@ -138,34 +138,34 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
 
     const fetchAudio = async () => {
       try {
-        const response = await fetch('/api/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: story }),
-        });
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          setAudioUrl(url);
-          
-          const audio = new Audio(url);
-          audioRef.current = audio;
-          
-          audio.onloadedmetadata = () => {
-             setAudioDuration(audio.duration);
-          };
-
-          audio.onplay = () => setIsPlaying(true);
-          audio.onpause = () => setIsPlaying(false);
-          audio.onended = () => {
-            setIsPlaying(false);
-            setEmotion('happy');
-          };
-          
-          // Start playing automatically
-          audio.play().catch(e => console.log('Autoplay blocked:', e));
-          startTypewriter(audio.duration || 10); // fallback to 10s
+        const puter = (window as any).puter;
+        if (!puter) {
+           console.error('Puter.js not loaded');
+           startTypewriter(10);
+           return;
         }
+
+        // Generate speech via Puter.js
+        // Returns an HTMLAudioElement
+        const audio = await puter.ai.txt2speech(story);
+        
+        audioRef.current = audio;
+        
+        audio.onloadedmetadata = () => {
+           setAudioDuration(audio.duration);
+        };
+
+        audio.onplay = () => setIsPlaying(true);
+        audio.onpause = () => setIsPlaying(false);
+        audio.onended = () => {
+          setIsPlaying(false);
+          setEmotion('happy');
+        };
+        
+        // Start playing automatically
+        audio.play().catch(e => console.log('Autoplay blocked:', e));
+        startTypewriter(audio.duration || 10); // fallback to 10s
+
       } catch (error) {
         console.error('Audio fetch error:', error);
         // Fallback: just start typewriter with some default speed
