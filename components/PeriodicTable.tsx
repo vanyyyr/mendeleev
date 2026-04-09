@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { elements, ChemicalElement } from '../lib/elements';
 import styles from './PeriodicTable.module.css';
 import StoryModal from './StoryModal';
