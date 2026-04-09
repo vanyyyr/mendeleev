@@ -163,10 +163,10 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
         };
         
         // Start playing automatically
-        audio.play().catch(e => console.log('Autoplay blocked:', e));
+        audio.play().catch(() => console.log('Autoplay blocked'));
         startTypewriter(audio.duration || 10); // fallback to 10s
 
-      } catch (error) {
+      } catch (error: any) {
         console.error('Audio fetch error:', error);
         // Fallback: just start typewriter with some default speed
         startTypewriter(10);
