@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'MIMO_API_KEY not configured' }, { status: 500 });
     }
 
-    console.log('Sending request to Xiaomi MIMO with messages:', messages?.length);
+    console.log('Sending direct request to Xiaomi MIMO with messages:', messages?.length);
 
     const systemPrompt = `Ты — эмпатичный AI-репетитор по химии для школьников 8-11 классов. 
 Ты знаешь ВСЮ таблицу Менделеева (118 элементов) и можешь ответить на ЛЮБОЙ вопрос о химии.
@@ -34,14 +34,37 @@ export async function POST(req: Request) {
 
 Начни с приветствия и предложи помощь с химией!`;
 
-    const result = await streamText({
-      model: mimo('mimo-v2-flash'),
-      system: systemPrompt,
-      messages: messages || [],
+    const response = await fetch('https://api.xiaomimimo.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.MIMO_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'mimo-v2-flash',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...(messages || [])
+        ],
+        stream: true
+      })
     });
 
-    return result.toTextStreamResponse();
-  } catch (error) {
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('MIMO API Error:', response.status, errorText);
+      throw new Error(`MIMO API Error: ${response.status}`);
+    }
+
+    // Return the stream directly. The frontend robustly parses the lines.
+    return new Response(response.body, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
+  } catch (error: any) {
     console.error('AI Chat error:', error);
     return new Response(
       JSON.stringify({ error: 'Ошибка генерации ответа. Попробуйте ещё раз.' }),

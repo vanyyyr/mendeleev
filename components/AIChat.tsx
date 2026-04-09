@@ -53,29 +53,56 @@ export default function AIChat() {
           return [...prev, { role: 'assistant', content: '' }];
         });
 
+        const decoder = new TextDecoder();
+        let assistantMessage = '';
+        let buffer = '';
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          
-          let chunk = decoder.decode(value, { stream: true });
-          
-          // Clean up potential Data Stream Protocol prefixes (0:", 2:", etc) 
-          // while keeping raw text if it's a simple text stream
-          if (chunk.startsWith('0:"')) {
-            chunk = chunk.substring(3, chunk.length - 1).replace(/\\n/g, '\n').replace(/\\"/g, '"');
-          } else if (chunk.startsWith('0:')) {
-            chunk = chunk.substring(2);
-          }
 
-          if (chunk) {
-            assistantMessage += chunk;
-            setMessages(prev => {
-              const newMessages = [...prev];
-              if (assistantMsgId !== -1) {
-                newMessages[assistantMsgId] = { role: 'assistant', content: assistantMessage };
+          buffer += decoder.decode(value, { stream: true });
+          
+          // The Vercel AI SDK stream protocol sends chunks delimited by newlines
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // Keep the last partial line in buffer
+
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (!trimmedLine || trimmedLine === 'data: [DONE]') continue;
+
+            let content = '';
+
+            // Handle OpenAI Protocol: data: {"choices": [{"delta": {"content": "..."}}]}
+            if (trimmedLine.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(trimmedLine.substring(6));
+                content = data.choices?.[0]?.delta?.content || '';
+              } catch (e) {
+                console.error('Failed to parse OpenAI stream line:', trimmedLine);
               }
-              return newMessages;
-            });
+            } 
+            // Handle Vercel AI SDK Protocol: 0:"text", 0:text
+            else if (trimmedLine.startsWith('0:"')) {
+              try {
+                content = JSON.parse(trimmedLine.substring(2));
+              } catch (e) {
+                content = trimmedLine.substring(3, trimmedLine.length - 1).replace(/\\n/g, '\n').replace(/\\"/g, '"');
+              }
+            } else if (trimmedLine.startsWith('0:')) {
+              content = trimmedLine.substring(2);
+            }
+
+            if (content) {
+              assistantMessage += content;
+              setMessages(prev => {
+                const newMessages = [...prev];
+                if (assistantMsgId !== -1) {
+                  newMessages[assistantMsgId] = { role: 'assistant', content: assistantMessage };
+                }
+                return newMessages;
+              });
+            }
           }
         }
       }
