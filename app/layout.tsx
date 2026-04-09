@@ -25,7 +25,6 @@ export default function RootLayout({
         <meta name="theme-color" content="#0984e3" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <script src="https://js.puter.com/v2/"></script>
       </head>
       <body>{children}</body>
     </html>
