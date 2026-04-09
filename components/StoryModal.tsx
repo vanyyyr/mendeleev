@@ -34,6 +34,7 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
   const [displayedStory, setDisplayedStory] = useState('');
   const [userId, setUserId] = useState('');
   const [elementData, setElementData] = useState<{ description: string; applications: string } | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -90,6 +91,7 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
   // ═══ Fetch element data ═══
   useEffect(() => {
     const fetchElementData = async () => {
+      setIsLoadingData(true);
       try {
         const response = await fetch(`/api/elements/${element.atomicNum}`);
         if (response.ok) {
@@ -105,6 +107,8 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
       } catch {
         setElementData(null);
         setQuestions([]);
+      } finally {
+        setIsLoadingData(false);
       }
     };
     fetchElementData();
@@ -118,6 +122,11 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
 
   // ═══ Typewriter + TTS ═══
   useEffect(() => {
+    if (isLoadingData) {
+      setDisplayedStory('');
+      return;
+    }
+
     let charIndex = 0;
     let cancelled = false;
     setDisplayedStory('');
@@ -148,7 +157,7 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
       clearInterval(timer);
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     };
-  }, [story]);
+  }, [story, isLoadingData]);
 
   // ═══ Quiz state ═══
   const currentQuestion = questions[currentQuestionIndex];
