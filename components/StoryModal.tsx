@@ -41,6 +41,13 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
   const [showExplanation, setShowExplanation] = useState(false);
   const [recommendation, setRecommendation] = useState<{ element: ChemicalElement; reason: string } | null>(null);
   const [achievementQueue, setAchievementQueue] = useState<Array<{ code: string; name: string; description: string; icon: string }>>([]);
+  
+  // Audio state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const typewriterTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -120,45 +127,110 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
      [elementData?.description, element.name, element.atomicNum]
    );
 
-  // ═══ Typewriter + TTS ═══
-  useEffect(() => {
-    if (isLoadingData) {
+    // ═══ Pre-fetch Audio Narration ═══
+    const fetchAudio = async () => {
+      try {
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: story }),
+        });
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          setAudioUrl(url);
+          
+          const audio = new Audio(url);
+          audioRef.current = audio;
+          
+          audio.onloadedmetadata = () => {
+             setAudioDuration(audio.duration);
+          };
+
+          audio.onplay = () => setIsPlaying(true);
+          audio.onpause = () => setIsPlaying(false);
+          audio.onended = () => {
+            setIsPlaying(false);
+            setEmotion('happy');
+          };
+          
+          // Start playing automatically
+          audio.play().catch(e => console.log('Autoplay blocked:', e));
+          startTypewriter(audio.duration || 10); // fallback to 10s
+        }
+      } catch (error) {
+        console.error('Audio fetch error:', error);
+        // Fallback: just start typewriter with some default speed
+        startTypewriter(10);
+      }
+    };
+
+    const startTypewriter = (durationSeconds: number) => {
+      if (typewriterTimerRef.current) clearInterval(typewriterTimerRef.current);
+      
+      const totalChars = story.length;
+      const msPerChar = (durationSeconds * 1000) / totalChars;
+      
+      let charIndex = 0;
       setDisplayedStory('');
-      return;
-    }
+      setEmotion('speaking');
 
-    let charIndex = 0;
-    let cancelled = false;
-    setDisplayedStory('');
-    setEmotion('speaking');
-    setSelectedOption(null);
-    setHint(null);
-    setShowExplanation(false);
-    setRecommendation(null);
+      typewriterTimerRef.current = setInterval(() => {
+        if (cancelled) return;
+        charIndex++;
+        if (charIndex <= story.length) {
+          setDisplayedStory(story.substring(0, charIndex));
+        } else {
+          if (typewriterTimerRef.current) clearInterval(typewriterTimerRef.current);
+          if (!isPlaying) setEmotion('happy');
+        }
+      }, msPerChar);
+    };
 
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(story);
-      utterance.lang = 'ru-RU';
-      utterance.rate = 1.0;
-      utterance.onend = () => setEmotion('happy');
-      window.speechSynthesis.speak(utterance);
-    }
-
-    const timer = setInterval(() => {
-      if (cancelled) { clearInterval(timer); return; }
-      charIndex++;
-      setDisplayedStory(story.substring(0, charIndex));
-      if (charIndex >= story.length) clearInterval(timer);
-    }, 40);
+    fetchAudio();
 
     return () => {
       cancelled = true;
-      clearInterval(timer);
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      if (typewriterTimerRef.current) clearInterval(typewriterTimerRef.current);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
-  }, [story, isLoadingData]);
+  }, [isLoadingData, story]);
 
+  const handlePlayPause = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+  };
+
+  const handleRestart = () => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    audioRef.current.play();
+    // Restart typewriter
+    if (audioDuration) {
+       const totalChars = story.length;
+       const msPerChar = (audioDuration * 1000) / totalChars;
+       let charIndex = 0;
+       if (typewriterTimerRef.current) clearInterval(typewriterTimerRef.current);
+       setDisplayedStory('');
+       setEmotion('speaking');
+       typewriterTimerRef.current = setInterval(() => {
+         charIndex++;
+         if (charIndex <= story.length) {
+           setDisplayedStory(story.substring(0, charIndex));
+         } else {
+            if (typewriterTimerRef.current) clearInterval(typewriterTimerRef.current);
+            setEmotion('happy');
+         }
+       }, msPerChar);
+    }
+  };
   // ═══ Quiz state ═══
   const currentQuestion = questions[currentQuestionIndex];
   const mockCorrect = element.group > 10 ? element.group - 10 : (element.group || 1);
@@ -318,6 +390,9 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
             emotion={emotion}
             displayedStory={displayedStory}
             applications={elementData?.applications}
+            isPlaying={isPlaying}
+            onPlayPause={handlePlayPause}
+            onRestart={handleRestart}
           />
 
           <QuizSection

@@ -130,6 +130,64 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 1rem;
+  gap: 1.5rem;
+}
+
+.mascotWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.audioControls {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 4px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.audioButton {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #0984e3;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.audioButton:hover {
+  background: #0984e3;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(9, 132, 227, 0.2);
+}
+
+.audioButton:active {
+  transform: scale(0.95);
+}
+
+[data-theme="dark"] .audioControls {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .audioButton {
+  background: #2c2c2e;
+  color: #2997ff;
+}
+
+[data-theme="dark"] .audioButton:hover {
+  background: #2997ff;
+  color: white;
 }
 
 .chatBubble {

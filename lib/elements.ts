@@ -1,10 +1,10 @@
 export type ElementCategory = 
-  | "diatomic-nonmetal"
+  | "nonmetal"
   | "noble-gas"
   | "alkali-metal"
   | "alkaline-earth-metal"
   | "metalloid"
-  | "polyatomic-nonmetal"
+  | "halogen"
   | "post-transition-metal"
   | "transition-metal"
   | "lanthanide"
@@ -23,25 +23,25 @@ export interface ChemicalElement {
 
 export const elements: ChemicalElement[] = [
   // Period 1
-  { atomicNum: 1,  symbol: "H",  name: "Водород",    period: 1, group: 1,  category: "diatomic-nonmetal",      atomicMass: 1.008 },
+  { atomicNum: 1,  symbol: "H",  name: "Водород",    period: 1, group: 1,  category: "nonmetal",               atomicMass: 1.008 },
   { atomicNum: 2,  symbol: "He", name: "Гелий",       period: 1, group: 18, category: "noble-gas",              atomicMass: 4.0026 },
   // Period 2
   { atomicNum: 3,  symbol: "Li", name: "Литий",       period: 2, group: 1,  category: "alkali-metal",           atomicMass: 6.94 },
   { atomicNum: 4,  symbol: "Be", name: "Бериллий",    period: 2, group: 2,  category: "alkaline-earth-metal",   atomicMass: 9.0122 },
   { atomicNum: 5,  symbol: "B",  name: "Бор",         period: 2, group: 13, category: "metalloid",              atomicMass: 10.81 },
-  { atomicNum: 6,  symbol: "C",  name: "Углерод",     period: 2, group: 14, category: "polyatomic-nonmetal",    atomicMass: 12.011 },
-  { atomicNum: 7,  symbol: "N",  name: "Азот",        period: 2, group: 15, category: "diatomic-nonmetal",      atomicMass: 14.007 },
-  { atomicNum: 8,  symbol: "O",  name: "Кислород",    period: 2, group: 16, category: "diatomic-nonmetal",      atomicMass: 15.999 },
-  { atomicNum: 9,  symbol: "F",  name: "Фтор",        period: 2, group: 17, category: "diatomic-nonmetal",      atomicMass: 18.998 },
+  { atomicNum: 6,  symbol: "C",  name: "Углерод",     period: 2, group: 14, category: "nonmetal",               atomicMass: 12.011 },
+  { atomicNum: 7,  symbol: "N",  name: "Азот",        period: 2, group: 15, category: "nonmetal",               atomicMass: 14.007 },
+  { atomicNum: 8,  symbol: "O",  name: "Кислород",    period: 2, group: 16, category: "nonmetal",               atomicMass: 15.999 },
+  { atomicNum: 9,  symbol: "F",  name: "Фтор",        period: 2, group: 17, category: "halogen",                atomicMass: 18.998 },
   { atomicNum: 10, symbol: "Ne", name: "Неон",        period: 2, group: 18, category: "noble-gas",              atomicMass: 20.180 },
   // Period 3
   { atomicNum: 11, symbol: "Na", name: "Натрий",      period: 3, group: 1,  category: "alkali-metal",           atomicMass: 22.990 },
   { atomicNum: 12, symbol: "Mg", name: "Магний",      period: 3, group: 2,  category: "alkaline-earth-metal",   atomicMass: 24.305 },
   { atomicNum: 13, symbol: "Al", name: "Алюминий",    period: 3, group: 13, category: "post-transition-metal",  atomicMass: 26.982 },
   { atomicNum: 14, symbol: "Si", name: "Кремний",     period: 3, group: 14, category: "metalloid",              atomicMass: 28.085 },
-  { atomicNum: 15, symbol: "P",  name: "Фосфор",      period: 3, group: 15, category: "polyatomic-nonmetal",    atomicMass: 30.974 },
-  { atomicNum: 16, symbol: "S",  name: "Сера",        period: 3, group: 16, category: "polyatomic-nonmetal",    atomicMass: 32.06 },
-  { atomicNum: 17, symbol: "Cl", name: "Хлор",        period: 3, group: 17, category: "diatomic-nonmetal",      atomicMass: 35.45 },
+  { atomicNum: 15, symbol: "P",  name: "Фосфор",      period: 3, group: 15, category: "nonmetal",               atomicMass: 30.974 },
+  { atomicNum: 16, symbol: "S",  name: "Сера",        period: 3, group: 16, category: "nonmetal",               atomicMass: 32.06 },
+  { atomicNum: 17, symbol: "Cl", name: "Хлор",        period: 3, group: 17, category: "halogen",                atomicMass: 35.45 },
   { atomicNum: 18, symbol: "Ar", name: "Аргон",       period: 3, group: 18, category: "noble-gas",              atomicMass: 39.95 },
   // Period 4
   { atomicNum: 19, symbol: "K",  name: "Калий",       period: 4, group: 1,  category: "alkali-metal",           atomicMass: 39.098 },
@@ -59,8 +59,8 @@ export const elements: ChemicalElement[] = [
   { atomicNum: 31, symbol: "Ga", name: "Галлий",      period: 4, group: 13, category: "post-transition-metal",  atomicMass: 69.723 },
   { atomicNum: 32, symbol: "Ge", name: "Германий",    period: 4, group: 14, category: "metalloid",              atomicMass: 72.630 },
   { atomicNum: 33, symbol: "As", name: "Мышьяк",      period: 4, group: 15, category: "metalloid",              atomicMass: 74.922 },
-  { atomicNum: 34, symbol: "Se", name: "Селен",       period: 4, group: 16, category: "polyatomic-nonmetal",    atomicMass: 78.971 },
-  { atomicNum: 35, symbol: "Br", name: "Бром",        period: 4, group: 17, category: "diatomic-nonmetal",      atomicMass: 79.904 },
+  { atomicNum: 34, symbol: "Se", name: "Селен",       period: 4, group: 16, category: "nonmetal",               atomicMass: 78.971 },
+  { atomicNum: 35, symbol: "Br", name: "Бром",        period: 4, group: 17, category: "halogen",                atomicMass: 79.904 },
   { atomicNum: 36, symbol: "Kr", name: "Криптон",     period: 4, group: 18, category: "noble-gas",              atomicMass: 83.798 },
   // Period 5
   { atomicNum: 37, symbol: "Rb", name: "Рубидий",     period: 5, group: 1,  category: "alkali-metal",           atomicMass: 85.468 },
@@ -79,7 +79,7 @@ export const elements: ChemicalElement[] = [
   { atomicNum: 50, symbol: "Sn", name: "Олово",       period: 5, group: 14, category: "post-transition-metal",  atomicMass: 118.71 },
   { atomicNum: 51, symbol: "Sb", name: "Сурьма",      period: 5, group: 15, category: "metalloid",              atomicMass: 121.76 },
   { atomicNum: 52, symbol: "Te", name: "Теллур",      period: 5, group: 16, category: "metalloid",              atomicMass: 127.60 },
-  { atomicNum: 53, symbol: "I",  name: "Иод",         period: 5, group: 17, category: "diatomic-nonmetal",      atomicMass: 126.90 },
+  { atomicNum: 53, symbol: "I",  name: "Иод",         period: 5, group: 17, category: "halogen",                atomicMass: 126.90 },
   { atomicNum: 54, symbol: "Xe", name: "Ксенон",      period: 5, group: 18, category: "noble-gas",              atomicMass: 131.29 },
   // Period 6
   { atomicNum: 55, symbol: "Cs", name: "Цезий",       period: 6, group: 1,  category: "alkali-metal",           atomicMass: 132.91 },
@@ -99,7 +99,7 @@ export const elements: ChemicalElement[] = [
   { atomicNum: 68, symbol: "Er", name: "Эрбий",       period: 6, group: 0,  category: "lanthanide",             atomicMass: 167.26 },
   { atomicNum: 69, symbol: "Tm", name: "Тулий",       period: 6, group: 0,  category: "lanthanide",             atomicMass: 168.93 },
   { atomicNum: 70, symbol: "Yb", name: "Иттербий",    period: 6, group: 0,  category: "lanthanide",             atomicMass: 173.05 },
-  { atomicNum: 71, symbol: "Lu", name: "Лютеций",     period: 6, group: 3,  category: "lanthanide",             atomicMass: 174.97 },
+  { atomicNum: 71, symbol: "Lu", name: "Лютеций",     period: 6, group: 0,  category: "lanthanide",             atomicMass: 174.97 },
   // Period 6 continued
   { atomicNum: 72, symbol: "Hf", name: "Гафний",      period: 6, group: 4,  category: "transition-metal",       atomicMass: 178.49 },
   { atomicNum: 73, symbol: "Ta", name: "Тантал",      period: 6, group: 5,  category: "transition-metal",       atomicMass: 180.95 },
@@ -114,7 +114,7 @@ export const elements: ChemicalElement[] = [
   { atomicNum: 82, symbol: "Pb", name: "Свинец",      period: 6, group: 14, category: "post-transition-metal",  atomicMass: 207.2 },
   { atomicNum: 83, symbol: "Bi", name: "Висмут",      period: 6, group: 15, category: "post-transition-metal",  atomicMass: 208.98 },
   { atomicNum: 84, symbol: "Po", name: "Полоний",     period: 6, group: 16, category: "post-transition-metal",  atomicMass: 209 },
-  { atomicNum: 85, symbol: "At", name: "Астат",       period: 6, group: 17, category: "metalloid",              atomicMass: 210 },
+  { atomicNum: 85, symbol: "At", name: "Астат",       period: 6, group: 17, category: "halogen",                atomicMass: 210 },
   { atomicNum: 86, symbol: "Rn", name: "Радон",       period: 6, group: 18, category: "noble-gas",              atomicMass: 222 },
   // Period 7
   { atomicNum: 87, symbol: "Fr", name: "Франций",     period: 7, group: 1,  category: "alkali-metal",           atomicMass: 223 },
@@ -134,7 +134,7 @@ export const elements: ChemicalElement[] = [
   { atomicNum: 100, symbol: "Fm", name: "Фермий",     period: 7, group: 0,  category: "actinide",               atomicMass: 257 },
   { atomicNum: 101, symbol: "Md", name: "Менделевий", period: 7, group: 0,  category: "actinide",               atomicMass: 258 },
   { atomicNum: 102, symbol: "No", name: "Нобелий",    period: 7, group: 0,  category: "actinide",               atomicMass: 259 },
-  { atomicNum: 103, symbol: "Lr", name: "Лоуренсий",  period: 7, group: 3,  category: "actinide",               atomicMass: 266 },
+  { atomicNum: 103, symbol: "Lr", name: "Лоуренсий",  period: 7, group: 0,  category: "actinide",               atomicMass: 266 },
   // Period 7 continued
   { atomicNum: 104, symbol: "Rf", name: "Резерфордий",period: 7, group: 4,  category: "transition-metal",       atomicMass: 267 },
   { atomicNum: 105, symbol: "Db", name: "Дубний",     period: 7, group: 5,  category: "transition-metal",       atomicMass: 268 },
@@ -149,7 +149,7 @@ export const elements: ChemicalElement[] = [
   { atomicNum: 114, symbol: "Fl", name: "Флеровий",   period: 7, group: 14, category: "unknown",                atomicMass: 289 },
   { atomicNum: 115, symbol: "Mc", name: "Московий",   period: 7, group: 15, category: "unknown",                atomicMass: 290 },
   { atomicNum: 116, symbol: "Lv", name: "Ливерморий", period: 7, group: 16, category: "unknown",                atomicMass: 293 },
-  { atomicNum: 117, symbol: "Ts", name: "Теннессин",  period: 7, group: 17, category: "unknown",                atomicMass: 294 },
+  { atomicNum: 117, symbol: "Ts", name: "Теннессин",  period: 7, group: 17, category: "halogen",                atomicMass: 294 },
   { atomicNum: 118, symbol: "Og", name: "Оганесон",   period: 7, group: 18, category: "noble-gas",              atomicMass: 294 },
 ];
 

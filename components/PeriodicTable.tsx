@@ -79,16 +79,16 @@ export default function PeriodicTable({ externalSelection, onExternalClear }: Pe
 
   // Category legend data
   const categories = [
+    { key: 'nonmetal', label: 'Неметаллы', color: '#e8f5e9' },
     { key: 'alkali-metal', label: 'Щелочные', color: '#ffebee' },
-    { key: 'alkaline-earth-metal', label: 'Щёлоч.-зем.', color: '#fff8e1' },
-    { key: 'transition-metal', label: 'Переходные', color: '#fce4ec' },
-    { key: 'post-transition-metal', label: 'Постпереходные', color: '#e0f7fa' },
-    { key: 'metalloid', label: 'Полуметаллы', color: '#e0f2f1' },
-    { key: 'diatomic-nonmetal', label: 'Неметаллы', color: '#e3f2fd' },
-    { key: 'polyatomic-nonmetal', label: 'Многоат. нем.', color: '#e8eaf6' },
-    { key: 'noble-gas', label: 'Благородные', color: '#f3e5f5' },
-    { key: 'lanthanide', label: 'Лантаноиды', color: '#e8f5e9' },
-    { key: 'actinide', label: 'Актиноиды', color: '#fff3e0' },
+    { key: 'alkaline-earth-metal', label: 'Щёлочнозем.', color: '#fff8e1' },
+    { key: 'lanthanide', label: 'Лантаноиды', color: '#fce4ec' },
+    { key: 'actinide', label: 'Актиноиды', color: '#fce4ec' },
+    { key: 'transition-metal', label: 'Переходные', color: '#fdf2f2' },
+    { key: 'post-transition-metal', label: 'Постпереходные', color: '#f1f2f6' },
+    { key: 'metalloid', label: 'Полуметаллы', color: '#f0f4c3' },
+    { key: 'halogen', label: 'Галогены', color: '#fff9c4' },
+    { key: 'noble-gas', label: 'Благородные', color: '#e3f2fd' },
     { key: 'unknown', label: 'Неизвестные', color: '#f5f5f5' },
   ];
 
