@@ -127,7 +127,15 @@ export default function StoryModal({ element, onClose, onNavigate }: StoryModalP
      [elementData?.description, element.name, element.atomicNum]
    );
 
-    // ═══ Pre-fetch Audio Narration ═══
+  // ═══ Pre-fetch Audio Narration ═══
+  useEffect(() => {
+    if (isLoadingData) {
+      setDisplayedStory('');
+      return;
+    }
+
+    let cancelled = false;
+
     const fetchAudio = async () => {
       try {
         const response = await fetch('/api/tts', {
