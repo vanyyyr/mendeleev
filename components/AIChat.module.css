@@ -205,31 +205,78 @@
   }
 }
 
-/* Dark theme for AI Chat */
+/* Dark theme for AI Chat - matching the colorful light theme style */
 [data-theme="dark"] .chatWindow {
-  background: #2d2d2d;
+  background: #000000;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .chatWindow::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(41, 151, 255, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 [data-theme="dark"] .chatHeader {
   background: linear-gradient(135deg, #2997ff, #0a84ff);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  position: relative;
+  z-index: 1;
 }
 
 [data-theme="dark"] .messages {
-  background: #363636;
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #121212;
+  border-radius: 0;
+}
+
+[data-theme="dark"] .message {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 85%;
 }
 
 [data-theme="dark"] .user {
   background: linear-gradient(135deg, #2997ff, #0a84ff);
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
 }
 
 [data-theme="dark"] .assistant {
-  background: #3d3d3d;
-  border: 1px solid #48484a;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 1px solid #2997ff;
   color: #f5f5f7;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.2);
 }
 
 [data-theme="dark"] .loading {
+  font-style: italic;
   color: #98989d;
 }
 
@@ -237,25 +284,79 @@
   animation: blink 1.4s infinite both;
 }
 
+[data-theme="dark"] .dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+[data-theme="dark"] .dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+[data-theme="dark"] .inputArea {
+  padding: 12px 16px;
+  background: #121212;
+  border-top: 1px solid #2997ff;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
 [data-theme="dark"] .input {
-  border: 2px solid #48484a;
-  background: #363636;
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #2997ff;
+  border-radius: 24px;
+  font-size: 0.95rem;
+  resize: none;
+  font-family: inherit;
+  background: #1a1a2e;
   color: #f5f5f7;
+  transition: border-color 0.2s;
+  max-height: 100px;
 }
 
 [data-theme="dark"] .input:focus {
-  border-color: #2997ff;
+  outline: none;
+  border-color: #00d4aa;
 }
 
 [data-theme="dark"] .sendBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   background: linear-gradient(135deg, #2997ff, #0a84ff);
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.3);
 }
 
 [data-theme="dark"] .sendBtn:hover:not(:disabled) {
   transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(41, 151, 255, 0.4);
 }
 
 [data-theme="dark"] .sendBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Add colorful accents to dark theme */
+[data-theme="dark"] .chatWindow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff006e, #ff6b6b, #ff9f1c, #ffd166, #06d6a0, #118ab2, #073b4c);
+  z-index: 2;
 }
