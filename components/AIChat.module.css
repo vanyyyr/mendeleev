@@ -30,13 +30,15 @@
   max-width: calc(100vw - 48px);
   height: 520px;
   max-height: calc(100vh - 120px);
-  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 1000;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   animation: slideIn 0.3s ease-out;
 }
 
@@ -53,13 +55,15 @@
 
 .chatHeader {
   padding: 16px 20px;
-  background: linear-gradient(135deg, #0984e3, #74b9ff);
-  color: #fff;
-  font-weight: 700;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  color: var(--foreground);
+  font-weight: 600;
   font-size: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .closeBtn {
@@ -107,10 +111,11 @@
 
 .assistant {
   background: #fff;
-  color: #2d3436;
-  border: 1px solid #dfe6e9;
+  color: var(--foreground);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   align-self: flex-start;
   border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .loading {
@@ -147,18 +152,20 @@
 .input {
   flex: 1;
   padding: 12px 16px;
-  border: 2px solid #dfe6e9;
-  border-radius: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
   font-size: 0.95rem;
   resize: none;
   font-family: inherit;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
   max-height: 100px;
+  background: #fff;
 }
 
 .input:focus {
   outline: none;
-  border-color: #0984e3;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
 }
 
 .sendBtn {
@@ -208,34 +215,31 @@
 /* Dark theme for AI Chat - matching the colorful light theme style */
 [data-theme="dark"] .chatWindow {
   background: #000000;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
 }
 
 [data-theme="dark"] .chatWindow::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 150px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(41, 151, 255, 0.15) 0%, transparent 70%);
+  height: 200px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(41, 151, 255, 0.1) 0%, transparent 80%);
   pointer-events: none;
   z-index: 0;
 }
 
 [data-theme="dark"] .chatHeader {
-  background: linear-gradient(135deg, #2997ff, #0a84ff);
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  position: relative;
-  z-index: 1;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  color: #f5f5f7;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 [data-theme="dark"] .messages {
@@ -245,7 +249,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: #121212;
+  background: #000000;
   border-radius: 0;
 }
 
@@ -267,12 +271,12 @@
 }
 
 [data-theme="dark"] .assistant {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  border: 1px solid #2997ff;
+  background: rgba(28, 28, 30, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: #f5f5f7;
   align-self: flex-start;
   border-bottom-left-radius: 4px;
-  box-shadow: 0 2px 8px rgba(41, 151, 255, 0.2);
 }
 
 [data-theme="dark"] .loading {
@@ -294,32 +298,34 @@
 
 [data-theme="dark"] .inputArea {
   padding: 12px 16px;
-  background: #121212;
-  border-top: 1px solid #2997ff;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   gap: 10px;
   align-items: flex-end;
   position: relative;
-  z-index: 1;
+  z-index: 10;
 }
 
 [data-theme="dark"] .input {
   flex: 1;
   padding: 12px 16px;
-  border: 2px solid #2997ff;
-  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
   font-size: 0.95rem;
   resize: none;
   font-family: inherit;
-  background: #1a1a2e;
+  background: rgba(28, 28, 30, 0.5);
   color: #f5f5f7;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
   max-height: 100px;
 }
 
 [data-theme="dark"] .input:focus {
   outline: none;
-  border-color: #00d4aa;
+  border-color: #2997ff;
+  background: rgba(28, 28, 30, 0.8);
 }
 
 [data-theme="dark"] .sendBtn {

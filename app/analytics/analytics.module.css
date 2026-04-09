@@ -85,10 +85,11 @@
 .errorCard {
   max-width: 400px;
   margin: 15vh auto;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
   padding: 2.5rem;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
   text-align: center;
   border: 1px solid var(--border);
 }
@@ -116,12 +117,13 @@
   font-family: var(--font-family);
   outline: none;
   transition: all 0.2s;
-  background: #fafafa;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 .passwordInput:focus {
   border-color: var(--primary);
-  background: #fff;
+  background: var(--surface);
   box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.1);
 }
 
@@ -155,7 +157,7 @@
   background: var(--surface);
   padding: 1.75rem;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -165,7 +167,7 @@
 
 .statCard:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 .statValue {
@@ -192,7 +194,7 @@
   background: var(--surface);
   padding: 2rem;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   border: 1px solid var(--border);
   margin-bottom: 1.5rem;
 }
@@ -209,8 +211,9 @@
   text-align: center;
   padding: 3rem;
   font-style: italic;
-  background: #fafafa;
+  background: var(--background);
   border-radius: var(--radius-md);
+  opacity: 0.8;
 }
 
 .barChart {
@@ -236,7 +239,7 @@
 .barTrack {
   flex: 1;
   height: 28px;
-  background: #f1f2f6;
+  background: var(--background);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
@@ -265,7 +268,7 @@
   grid-template-columns: 180px 140px 140px 80px 100px;
   gap: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--background);
   border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 0.85rem;
@@ -300,7 +303,7 @@
   font-family: 'Menlo', 'Monaco', monospace;
   font-size: 0.85rem;
   color: var(--text-muted);
-  background: #f1f2f6;
+  background: var(--background);
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
 }
@@ -439,6 +442,24 @@
 
 .accuracyHigh { background: #e8f5e9; color: #2e7d32; }
 .accuracyLow { background: #ffebee; color: #c62828; }
+
+/* Dark theme adjustments for Analytics */
+[data-theme="dark"] .statCard,
+[data-theme="dark"] .chartCard,
+[data-theme="dark"] .recentSection,
+[data-theme="dark"] .loginCard {
+  background: rgba(28, 28, 30, 0.6);
+  backdrop-filter: blur(20px);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .actionBadge.ANSWER_CORRECT { background: rgba(48, 209, 88, 0.15); color: #30d158; }
+[data-theme="dark"] .actionBadge.ANSWER_INCORRECT { background: rgba(255, 69, 58, 0.15); color: #ff453a; }
+[data-theme="dark"] .actionBadge.HINT_REQUESTED { background: rgba(255, 214, 10, 0.15); color: #ffd60a; }
+[data-theme="dark"] .actionBadge.ELEMENT_VIEWED { background: rgba(10, 132, 255, 0.15); color: #409cff; }
+
+[data-theme="dark"] .accuracyHigh { background: rgba(48, 209, 88, 0.15); color: #30d158; }
+[data-theme="dark"] .accuracyLow { background: rgba(255, 69, 58, 0.15); color: #ff453a; }
 
 @media (max-width: 768px) {
   .container { padding: 1rem; }

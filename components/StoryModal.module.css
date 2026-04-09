@@ -5,7 +5,7 @@
   width: 100vw;
   height: 100vh;
   background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(20px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,7 +34,8 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  background: #f8f9fa;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
   gap: 1rem;
 }
 
@@ -132,16 +133,16 @@
 }
 
 .chatBubble {
-  background: #e3f2fd;
-  border: 1px solid #bbdefb;
-  color: #1565c0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  color: var(--foreground);
   padding: 1.5rem;
   border-radius: 16px;
   border-top-left-radius: 4px;
   font-size: 1.1rem;
   line-height: 1.6;
   position: relative;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   flex: 1;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -564,21 +565,21 @@
    }
  }
 
-/* Dark theme for StoryModal */
 [data-theme="dark"] .overlay {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
 }
 
 [data-theme="dark"] .modal {
-  background: #2d2d2d;
+  background: #1c1c1e;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   color: #f5f5f7;
 }
 
 [data-theme="dark"] .header {
-  background: #363636;
+  background: rgba(44, 44, 46, 0.5);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -616,13 +617,14 @@
 }
 
 [data-theme="dark"] .chatBubble {
-  background: #3d3d3d;
-  border: 1px solid #48484a;
+  background: rgba(44, 44, 46, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #f5f5f7;
 }
 
 [data-theme="dark"] .testSection {
-  background: #363636;
+  background: #1c1c1e;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -635,10 +637,10 @@
 }
 
 [data-theme="dark"] .optionButton {
-  background: #363636;
-  border: 2px solid #48484a;
+  background: #2c2c2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #f5f5f7;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .optionButton:hover:not(:disabled) {
@@ -668,8 +670,8 @@
 }
 
 [data-theme="dark"] .aiHint {
-  background: #3d3222;
-  border-left: 4px solid #ffca28;
+  background: #332d1e;
+  border-left: 4px solid #ffd60a;
   color: #f5f5f7;
 }
 
@@ -678,7 +680,7 @@
 }
 
 [data-theme="dark"] .explanation {
-  background: #363636;
+  background: #2c2c2e;
   border-left: 4px solid #2997ff;
   color: #f5f5f7;
 }

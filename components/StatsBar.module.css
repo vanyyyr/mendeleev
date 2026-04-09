@@ -4,7 +4,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.6rem 1.5rem;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
   position: sticky;
@@ -127,4 +128,16 @@
   }
 }
 
-/* Dark theme for StatsBar - uses CSS variables from globals.css */
+[data-theme="dark"] .container {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .xpBar {
+  background: #2c2c2e;
+}
+
+[data-theme="dark"] .xpFill {
+  background: linear-gradient(90deg, #30d158, #32d74b);
+}

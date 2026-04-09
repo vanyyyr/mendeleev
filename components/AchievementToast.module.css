@@ -93,9 +93,10 @@
 
 /* Dark theme for AchievementToast */
 [data-theme="dark"] .toast {
-  background: linear-gradient(135deg, #3d3222, #483d22);
-  border: 2px solid #ffd54f;
-  box-shadow: 0 8px 32px rgba(255, 193, 7, 0.4);
+  background: rgba(44, 44, 46, 0.8);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 214, 10, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
 
 [data-theme="dark"] .label {
